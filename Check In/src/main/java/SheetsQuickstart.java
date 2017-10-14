@@ -104,40 +104,55 @@ public class SheetsQuickstart {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
+    
+    public static void updateSheet(String name) throws IOException{
+    	
+    	 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+         
+    	 // Create requests object
+         List<Request> requests = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException {
-        // Build a new authorized API client service.
-        Sheets service = getSheetsService();
+         // Create values object
+         List<CellData> values = new ArrayList<>();
+         
+  
+         values.add(new CellData()
+                 .setUserEnteredValue(new ExtendedValue()
+                         .setStringValue((timeStamp))));
+         
+         // Build a new authorized API client service.
+         Sheets service = getSheetsService();
 
-        // Prints the names and majors of students in a sample spreadsheet:
-        // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-        // Todo: change this text to have your own spreadsheetID
-        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
- 
-        // Create requests object
-        List<Request> requests = new ArrayList<>();
+         // Prints the names and majors of students in a sample spreadsheet:
+         // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+         // Todo: change this text to have your own spreadsheetID
+         String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
+         
+         
+         
+    	// ADD NAME TO SHEET
+     	List<CellData> valuesName = new ArrayList<>();
+     	//String Name = "Alex";
 
-        // Create values object
-        List<CellData> values = new ArrayList<>();
-        
-        // Add string 9/12/2016 value
-        
-        // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-        
-        values.add(new CellData()
+        valuesName.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue((timeStamp))));
-        
-        Scanner kb = new Scanner(System.in);
-        System.out.println("Please enter your name");
-        String name = kb.nextLine();
-        
-        
-        // WE NEED TO KEEP TRACK OF LAST ROW/COLUMN USED
-        // WE NEED TO GET STUDENT ID TO ADD TO THE SHEET
-
-        // Prepare request with proper row and column and its value
+                        .setStringValue((name))));
+     	
+        requests.add(new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(1)     // set the row to row 1 
+                                .setColumnIndex(0)) // set the new column 6 to value "yes" at row 1
+                        .setRows(Arrays.asList(
+                                new RowData().setValues(valuesName)))
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
+        BatchUpdateSpreadsheetRequest batchUpdateRequestName = new BatchUpdateSpreadsheetRequest()
+    	        .setRequests(requests);
+    	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
+    	        .execute();        
+    	
+    	 // Prepare request with proper row and column and its value
         requests.add(new Request()
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
@@ -175,29 +190,31 @@ public class SheetsQuickstart {
      	        .execute();      
      	
         // Prepare request with proper row and column and its value
-     	// ADD NAME TO SHEET
-     	List<CellData> valuesName = new ArrayList<>();
-     	//String Name = "Alex";
-
-        valuesName.add(new CellData()
-                .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue((name))));
      	
-        requests.add(new Request()
-                .setUpdateCells(new UpdateCellsRequest()
-                        .setStart(new GridCoordinate()
-                                .setSheetId(0)
-                                .setRowIndex(1)     // set the row to row 1 
-                                .setColumnIndex(0)) // set the new column 6 to value "yes" at row 1
-                        .setRows(Arrays.asList(
-                                new RowData().setValues(valuesName)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
-        BatchUpdateSpreadsheetRequest batchUpdateRequestName = new BatchUpdateSpreadsheetRequest()
-    	        .setRequests(requests);
-    	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
-    	        .execute();        
+     	
 
     
+    }
+
+    public static void main(String[] args) throws IOException {
+       
+ 
+       // Add string 9/12/2016 value
+        
+        // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
+       
+        
+        Scanner kb = new Scanner(System.in);
+        System.out.println("Please enter your name");
+        String name = kb.nextLine();
+        
+        updateSheet(name);
+        
+        // WE NEED TO KEEP TRACK OF LAST ROW/COLUMN USED
+        // WE NEED TO GET STUDENT ID TO ADD TO THE SHEET
+
+       
+     	
     }
 
 
