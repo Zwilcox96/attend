@@ -23,10 +23,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.Date;
 import java.text.*;
 import java.util.Calendar;
 import java.util.Scanner;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
+
 
 
 public class SheetsQuickstart {
@@ -104,9 +109,132 @@ public class SheetsQuickstart {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
-    
-    public static void updateSheet(String name) throws IOException{
+    /**
+     * This code was borrowed from https://www.tutorialspoint.com/java/java_sending_email.htm
+     * @param email
+     * @param name
+     */
+    public static void sendReceipt(String email, String name, String subject, String realMessage){
+    	String to = email;
+    	//change this later
+    	String from = "ecs@csus.edu";
+    	String host = "Local Host";
+    	Properties properties = System.getProperties();
+
+        // Setup mail server
+        properties.setProperty("mail.smtp.host", host);
+
+        // Get the default Session object.
+        Session session = Session.getDefaultInstance(properties);
+
+        try {
+           // Create a default MimeMessage object.
+           MimeMessage message = new MimeMessage(session);
+
+           // Set From: header field of the header.
+           message.setFrom(new InternetAddress(from));
+
+           // Set To: header field of the header.
+           message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+           // Set Subject: header field
+           message.setSubject(subject);
+
+           // Now set the actual message
+           message.setText(realMessage);
+
+           // Send message
+           Transport.send(message);
+           //System.out.println("Sent message successfully....");
+        }catch (MessagingException mex) {
+           mex.printStackTrace();
+        }
+    }
+    /**
+     * This method marks the time a given student records their attendance for a give class period
+     * @param row The row that a students SID is on
+     * @throws IOException when a spreadsheet cannot be reached
+     */
+    public static void markAttendance(int row) throws IOException{
+    	 // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
+   	 String timeStamp = new SimpleDateFormat("HHmmss").format(Calendar.getInstance().getTime());
+        
+   	 // Create requests object
+        List<Request> requests = new ArrayList<>();
+
+        // Create values object
+        List<CellData> values = new ArrayList<>();
+        
+ 
+        values.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue((timeStamp))));
+        
+        // Build a new authorized API client service.
+        Sheets service = getSheetsService();
+
+        // Prints the names and majors of students in a sample spreadsheet:
+        // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+        // Todo: change this text to have your own spreadsheetID
+        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
+        
+        /*
+    	// Add string 9/12/2016 value
+   	 // Prepare request with proper row and column and its value
+       requests.add(new Request()
+               .setUpdateCells(new UpdateCellsRequest()
+                       .setStart(new GridCoordinate()
+                               .setSheetId(0)
+                               .setRowIndex(0)     // set the row to row 0 
+                               .setColumnIndex(6)) // set the new column 6 to value 6/1/2017 at row 0
+                       .setRows(Arrays.asList(
+                               new RowData().setValues(values)))
+                       .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+       
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
+    	        .setRequests(requests);
+    	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest)
+    	        .execute();
+    	*/
+    	List<CellData> valuesNew = new ArrayList<>();
+        // Add string 6/21/2016 value
+        valuesNew.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue((timeStamp))));
+        
+        int column = 0;
+                        
+        try {
+        // Prepare request with proper row and column and its value
+        requests.add(new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(row)     // set the row to the row that contains the students 
+                                .setColumnIndex(column)) // set the column to be the column that contains todays attendance 
+                        .setRows(Arrays.asList(
+                                new RowData().setValues(valuesNew)))
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
+        BatchUpdateSpreadsheetRequest batchUpdateRequestNew = new BatchUpdateSpreadsheetRequest()
+    	        .setRequests(requests);
+    	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestNew)
+    	        .execute();      
+        } catch (IOException e){
+    		System.out.println("error");
+    	}
+        //todo make code that gets names from the google doc and emails from the DB
+        String email = null;
+        String studentName = null;
+        String subject = "Attendence for todays session";
+        String message = studentName + ", we have recieved your attendance for today's class at" + timeStamp;
+        sendReceipt(email, studentName, subject, message);
     	
+       // Prepare request with proper row and column and its value
+    	
+    	
+    }
+    public static int updateName(String name) throws IOException{
+        // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
     	 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
          
     	 // Create requests object
@@ -143,7 +271,7 @@ public class SheetsQuickstart {
                         .setStart(new GridCoordinate()
                                 .setSheetId(0)
                                 .setRowIndex(1)     // set the row to row 1 
-                                .setColumnIndex(0)) // set the new column 6 to value "yes" at row 1
+                                .setColumnIndex(0)) // put the name of the student to the list
                         .setRows(Arrays.asList(
                                 new RowData().setValues(valuesName)))
                         .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
@@ -152,46 +280,7 @@ public class SheetsQuickstart {
     	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
     	        .execute();        
     	
-    	 // Prepare request with proper row and column and its value
-        requests.add(new Request()
-                .setUpdateCells(new UpdateCellsRequest()
-                        .setStart(new GridCoordinate()
-                                .setSheetId(0)
-                                .setRowIndex(0)     // set the row to row 0 
-                                .setColumnIndex(6)) // set the new column 6 to value 6/1/2017 at row 0
-                        .setRows(Arrays.asList(
-                                new RowData().setValues(values)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-        
-         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
-     	        .setRequests(requests);
-     	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest)
-     	        .execute();
-     	
-     	List<CellData> valuesNew = new ArrayList<>();
-         // Add string 6/21/2016 value
-         valuesNew.add(new CellData()
-                 .setUserEnteredValue(new ExtendedValue()
-                         .setStringValue(("Yes"))));
-
-         // Prepare request with proper row and column and its value
-         requests.add(new Request()
-                 .setUpdateCells(new UpdateCellsRequest()
-                         .setStart(new GridCoordinate()
-                                 .setSheetId(0)
-                                 .setRowIndex(1)     // set the row to row 1 
-                                 .setColumnIndex(6)) // set the new column 6 to value "yes" at row 1
-                         .setRows(Arrays.asList(
-                                 new RowData().setValues(valuesNew)))
-                         .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
-         BatchUpdateSpreadsheetRequest batchUpdateRequestNew = new BatchUpdateSpreadsheetRequest()
-     	        .setRequests(requests);
-     	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestNew)
-     	        .execute();      
-     	
-        // Prepare request with proper row and column and its value
-     	
-     	
+    	
 
     
     }
@@ -199,17 +288,15 @@ public class SheetsQuickstart {
     public static void main(String[] args) throws IOException {
        
  
-       // Add string 9/12/2016 value
-        
-        // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
+    
        
         
         Scanner kb = new Scanner(System.in);
         System.out.println("Please enter your name");
         String name = kb.nextLine();
         
-        updateSheet(name);
-        
+        int row = updateName(name);
+        markAttendance(row);
         // WE NEED TO KEEP TRACK OF LAST ROW/COLUMN USED
         // WE NEED TO GET STUDENT ID TO ADD TO THE SHEET
 
