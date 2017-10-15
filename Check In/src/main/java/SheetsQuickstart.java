@@ -287,21 +287,13 @@ public class SheetsQuickstart {
 
     public static void main(String[] args) throws IOException {
        
- 
-    
-       
-        
         Scanner kb = new Scanner(System.in);
         System.out.println("Please enter your name");
         String name = kb.nextLine();
         
         int row = updateName(name);
         markAttendance(row);
-        // WE NEED TO KEEP TRACK OF LAST ROW/COLUMN USED
-        // WE NEED TO GET STUDENT ID TO ADD TO THE SHEET
-
-       
-     	
+      
     }
 
 
