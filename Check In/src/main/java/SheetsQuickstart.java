@@ -109,6 +109,45 @@ public class SheetsQuickstart {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
+    
+    /**
+     * This method will check to see if the student name/id is already listed in the sheet. If the name/id is not found, this 
+     * indicates the student has not signed in before and should be added to the first empty row available. If the student is found,
+     * then the location on the sheet should be determined in order to correctly mark the attendence.
+     */
+    public static void checkStudent() {
+    	// Build a new authorized API client service.
+        Sheets service = getSheetsService();
+
+        // Prints the names and majors of students in a sample spreadsheet:
+        // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+        // Todo: change this text to have your own spreadsheetID
+        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
+        
+        String range = "A2:A50";
+        
+        Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, range);
+        
+        ValueRange response = request.execute();
+
+        System.out.println(response);
+        
+        JSONObject jsonObject = new JSONObject(response);
+        JSONArray arr = jsonObject.getJSONArray("values");
+                
+        String[] strArr = new String[arr.length()];
+        
+        for(int i=0; i<strArr.length; i++) {
+        	strArr[i] = arr.optString(i);
+        }
+        
+        for (int i=0; i<strArr.length; i++) {
+        	strArr[i] = strArr[i].replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
+        	System.out.println(strArr[i]);
+        }
+
+    }
+    
     /**
      * This code was borrowed from https://www.tutorialspoint.com/java/java_sending_email.htm
      * @param email
@@ -233,6 +272,7 @@ public class SheetsQuickstart {
     	
     	
     }
+    
     public static int updateName(String name) throws IOException{
         // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
     	 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
