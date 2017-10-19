@@ -205,7 +205,7 @@ public class SheetsQuickstart {
         int column = 0;
                         
         try {
-        // Prepare request with proper row and column and its value
+        // Prepare request to mark a time stamp on the google sheet.
         requests.add(new Request()
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
@@ -220,6 +220,7 @@ public class SheetsQuickstart {
     	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestNew)
     	        .execute();      
         } catch (IOException e){
+        	//if the get request fails.
     		System.out.println("error");
     	}
         //todo make code that gets names from the google doc and emails from the DB
