@@ -212,36 +212,26 @@ public class SheetsQuickstart {
         // Build a new authorized API client service.
         Sheets service = getSheetsService();
 
-        // Prints the names and majors of students in a sample spreadsheet:
-        // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-        // Todo: change this text to have your own spreadsheetID
-        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
         
-        /*
-    	// Add string 9/12/2016 value
-   	 // Prepare request with proper row and column and its value
-       requests.add(new Request()
-               .setUpdateCells(new UpdateCellsRequest()
-                       .setStart(new GridCoordinate()
-                               .setSheetId(0)
-                               .setRowIndex(0)     // set the row to row 0 
-                               .setColumnIndex(6)) // set the new column 6 to value 6/1/2017 at row 0
-                       .setRows(Arrays.asList(
-                               new RowData().setValues(values)))
-                       .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-       
-        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
-    	        .setRequests(requests);
-    	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest)
-    	        .execute();
-    	*/
     	List<CellData> valuesNew = new ArrayList<>();
         // Add string 6/21/2016 value
         valuesNew.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
                         .setStringValue((timeStamp))));
         
-        int column = 0;
+        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
+        
+        String range = "2:2";
+        
+        Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, range);
+        
+        ValueRange response = request.execute();
+
+        System.out.println(response);
+        
+        JSONObject jsonObject = new JSONObject(response);
+        JSONArray arr = jsonObject.getJSONArray("values");
+        int column = arr.length();
                         
         try {
         // Prepare request to mark a time stamp on the google sheet.
@@ -273,6 +263,8 @@ public class SheetsQuickstart {
     	
     	
     }
+    
+    
     
     public static int updateName(String name) throws IOException{
         // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
