@@ -31,6 +31,7 @@ import java.util.Scanner;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
+import org.json.*;
 
 
 
@@ -79,7 +80,7 @@ public class SheetsQuickstart {
     public static Credential authorize() throws IOException {
         // Load client secrets.
         // Todo: Change this text to the location where your client_secret.json resided
-        InputStream in = new FileInputStream("/Users/agonz/Desktop/Check In Program/Check In/client_secret.json");
+        InputStream in = new FileInputStream("D:\\CSC131\\attend\\Check In\\client_secret.json");
             // SheetsQuickstart.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
@@ -114,8 +115,11 @@ public class SheetsQuickstart {
      * This method will check to see if the student name/id is already listed in the sheet. If the name/id is not found, this 
      * indicates the student has not signed in before and should be added to the first empty row available. If the student is found,
      * then the location on the sheet should be determined in order to correctly mark the attendence.
+     * @param name 
+     * @return rowNum
+     * @throws IOException 
      */
-    public static void checkStudent() {
+    public static int checkStudent(String name) throws IOException {
     	// Build a new authorized API client service.
         Sheets service = getSheetsService();
 
@@ -125,6 +129,8 @@ public class SheetsQuickstart {
         String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
         
         String range = "A2:A50";
+        
+        int rowNum = -1;
         
         Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, range);
         
@@ -143,9 +149,15 @@ public class SheetsQuickstart {
         
         for (int i=0; i<strArr.length; i++) {
         	strArr[i] = strArr[i].replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
-        	System.out.println(strArr[i]);
+  
+        	if(strArr[i].compareToIgnoreCase(name) == 0 )
+        	{
+        		rowNum = i+1;
+        	}
         }
-
+        
+        System.out.println(rowNum);
+        return rowNum;
     }
     
     /**
@@ -196,7 +208,7 @@ public class SheetsQuickstart {
      */
     public static void markAttendance(int row) throws IOException{
     	 // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
-   	 String timeStamp = new SimpleDateFormat("HHmmss").format(Calendar.getInstance().getTime());
+   	 String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
         
    	 // Create requests object
         List<Request> requests = new ArrayList<>();
@@ -231,7 +243,7 @@ public class SheetsQuickstart {
         
         JSONObject jsonObject = new JSONObject(response);
         JSONArray arr = jsonObject.getJSONArray("values");
-        int column = arr.length();
+        int column = arr.length() + 1;
                         
         try {
         // Prepare request to mark a time stamp on the google sheet.
@@ -257,30 +269,35 @@ public class SheetsQuickstart {
         String studentName = null;
         String subject = "Attendence for todays session";
         String message = studentName + ", we have recieved your attendance for today's class at" + timeStamp;
-        sendReceipt(email, studentName, subject, message);
+        //sendReceipt(email, studentName, subject, message);
     	
        // Prepare request with proper row and column and its value
     	
     	
     }
     
-    
+    /**
+     * Please insert what updateName does.
+     * @param name
+     * @return 
+     * @throws IOException
+     */
     
     public static int updateName(String name) throws IOException{
         // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
-    	 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+    	// String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
          
     	 // Create requests object
          List<Request> requests = new ArrayList<>();
 
          // Create values object
-         List<CellData> values = new ArrayList<>();
+         //List<CellData> values = new ArrayList<>();
          
   
-         values.add(new CellData()
+         /*values.add(new CellData()
                  .setUserEnteredValue(new ExtendedValue()
-                         .setStringValue((timeStamp))));
-         
+                         .setStringValue((timeStamp))));*/
+
          // Build a new authorized API client service.
          Sheets service = getSheetsService();
 
@@ -313,10 +330,11 @@ public class SheetsQuickstart {
     	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
     	        .execute();        
     	
-    	
+    	return 1;
 
     
     }
+    
 
     public static void main(String[] args) throws IOException {
        
@@ -324,9 +342,9 @@ public class SheetsQuickstart {
         System.out.println("Please enter your name");
         String name = kb.nextLine();
         
-        int row = updateName(name);
+        int row = checkStudent(name);
         markAttendance(row);
-      
+        kb.close();
     }
 
 
