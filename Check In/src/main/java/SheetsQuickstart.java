@@ -80,7 +80,7 @@ public class SheetsQuickstart {
     public static Credential authorize() throws IOException {
         // Load client secrets.
         // Todo: Change this text to the location where your client_secret.json resided
-        InputStream in = new FileInputStream("D:\\CSC131\\attend\\Check In\\client_secret.json");
+        InputStream in = new FileInputStream("/Users/agonz/git/attend/Check In/client_secret.json");
             // SheetsQuickstart.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
@@ -122,30 +122,20 @@ public class SheetsQuickstart {
     public static int checkStudent(String name) throws IOException {
     	// Build a new authorized API client service.
         Sheets service = getSheetsService();
-
-        // Prints the names and majors of students in a sample spreadsheet:
-        // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-        // Todo: change this text to have your own spreadsheetID
-        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
-        
+        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";   
         String range = "A2:A50";
-        
         int rowNum = -1;
-        
         Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, range);
-        
         ValueRange response = request.execute();
-
-        System.out.println(response);
-        
         JSONObject jsonObject = new JSONObject(response);
         JSONArray arr = jsonObject.getJSONArray("values");
-                
         String[] strArr = new String[arr.length()];
         
         for(int i=0; i<strArr.length; i++) {
         	strArr[i] = arr.optString(i);
         }
+        
+        boolean exists=false;
         
         for (int i=0; i<strArr.length; i++) {
         	strArr[i] = strArr[i].replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
@@ -153,13 +143,64 @@ public class SheetsQuickstart {
         	if(strArr[i].compareToIgnoreCase(name) == 0 )
         	{
         		rowNum = i+1;
+        		exists = true;
         	}
         }
         
-        System.out.println(rowNum);
+        if (!exists) {
+        	System.out.println("Welcome, " + name + ". Please enter your Student ID to be added to the class.");
+            Scanner kb = new Scanner(System.in);
+            String studentID = kb.nextLine();
+        	rowNum = strArr.length + 1;
+            
+        	List<Request> requests = new ArrayList<>();
+        	// ADD NAME TO SHEET
+         	List<CellData> valuesName = new ArrayList<>();
+         	List<CellData> valuesID = new ArrayList<>();
+
+            valuesName.add(new CellData()
+                    .setUserEnteredValue(new ExtendedValue()
+                            .setStringValue((name))));
+         	
+            requests.add(new Request()
+                    .setUpdateCells(new UpdateCellsRequest()
+                            .setStart(new GridCoordinate()
+                                    .setSheetId(0)
+                                    .setRowIndex(rowNum)     // set the row to row 1 
+                                    .setColumnIndex(0)) // put the name of the student to the list
+                            .setRows(Arrays.asList(
+                                    new RowData().setValues(valuesName)))
+                            .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
+            BatchUpdateSpreadsheetRequest batchUpdateRequestName = new BatchUpdateSpreadsheetRequest()
+        	        .setRequests(requests);
+        	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
+        	        .execute();  
+        	
+            valuesID.add(new CellData()
+                    .setUserEnteredValue(new ExtendedValue()
+                            .setStringValue((studentID))));
+         	
+            requests.add(new Request()
+                    .setUpdateCells(new UpdateCellsRequest()
+                            .setStart(new GridCoordinate()
+                                    .setSheetId(0)
+                                    .setRowIndex(rowNum)     // set the row to row 1 
+                                    .setColumnIndex(1)) // put the name of the student to the list
+                            .setRows(Arrays.asList(
+                                    new RowData().setValues(valuesID)))
+                            .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
+            BatchUpdateSpreadsheetRequest batchUpdateRequestID = new BatchUpdateSpreadsheetRequest()
+        	        .setRequests(requests);
+        	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestID)
+        	        .execute();        
+
+
+        	updateName(name, rowNum);
+        }
+        
+        //System.out.println(rowNum);
         return rowNum;
     }
-    
     /**
      * This code was borrowed from https://www.tutorialspoint.com/java/java_sending_email.htm
      * @param email
@@ -206,7 +247,7 @@ public class SheetsQuickstart {
      * @param row The row that a students SID is on
      * @throws IOException when a spreadsheet cannot be reached
      */
-    public static void markAttendance(int row) throws IOException{
+    public static void markAttendance(int row, String name) throws IOException{
     	 // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
    	 String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
         
@@ -239,7 +280,7 @@ public class SheetsQuickstart {
         
         ValueRange response = request.execute();
 
-        System.out.println(response);
+        //System.out.println(response);
         
         JSONObject jsonObject = new JSONObject(response);
         JSONArray arr = jsonObject.getJSONArray("values");
@@ -265,14 +306,15 @@ public class SheetsQuickstart {
     		System.out.println("error");
     	}
         //todo make code that gets names from the google doc and emails from the DB
-        String email = null;
-        String studentName = null;
+        String email = "zwilcox96@gmail.com";
+        String studentName = name;
         String subject = "Attendence for todays session";
         String message = studentName + ", we have recieved your attendance for today's class at" + timeStamp;
         //sendReceipt(email, studentName, subject, message);
     	
        // Prepare request with proper row and column and its value
-    	
+    	System.out.println("Attendence for todays session:");
+    	System.out.println(studentName + ", we have recieved your attendance for today's class at " + timeStamp);
     	
     }
     
@@ -283,7 +325,7 @@ public class SheetsQuickstart {
      * @throws IOException
      */
     
-    public static int updateName(String name) throws IOException{
+    public static int updateName(String name, int rowNum) throws IOException{
         // THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
     	// String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
          
@@ -310,7 +352,6 @@ public class SheetsQuickstart {
          
     	// ADD NAME TO SHEET
      	List<CellData> valuesName = new ArrayList<>();
-     	//String Name = "Alex";
 
         valuesName.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
@@ -320,7 +361,7 @@ public class SheetsQuickstart {
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
                                 .setSheetId(0)
-                                .setRowIndex(1)     // set the row to row 1 
+                                .setRowIndex(rowNum)     // set the row to row 1 
                                 .setColumnIndex(0)) // put the name of the student to the list
                         .setRows(Arrays.asList(
                                 new RowData().setValues(valuesName)))
@@ -339,11 +380,11 @@ public class SheetsQuickstart {
     public static void main(String[] args) throws IOException {
        
         Scanner kb = new Scanner(System.in);
-        System.out.println("Please enter your name");
+        System.out.println("Please enter your name:");
         String name = kb.nextLine();
         
         int row = checkStudent(name);
-        markAttendance(row);
+        markAttendance(row, name);
         kb.close();
     }
 
