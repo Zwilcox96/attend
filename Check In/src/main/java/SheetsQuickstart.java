@@ -116,12 +116,12 @@ public class SheetsQuickstart {
     /**
      * This method will check to see if the student name/id is already listed in the sheet. If the name/id is not found, this 
      * indicates the student has not signed in before and should be added to the first empty row available. If the student is found,
-     * then the location on the sheet should be determined in order to correctly mark the attendence.
+     * then the location on the sheet should be determined in order to correctly mark the attendance.
      * @param name 
      * @return rowNum
      * @throws IOException 
      */
-    public static int checkStudent(String name, String studentPin) throws IOException {
+    public static int checkStudent(String name) throws IOException {
     	// Build a new authorized API client service.
         Sheets service = getSheetsService();
         String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";   
@@ -133,93 +133,72 @@ public class SheetsQuickstart {
         JSONArray arr = jsonObject.getJSONArray("values");
         String[] strArr = new String[arr.length()];
         
-        String val = "D1";
-        Sheets.Spreadsheets.Values.Get request2 = service.spreadsheets().values().get(spreadsheetId, val);
-        ValueRange response2 = request2.execute();
-        JSONObject pinObject = new JSONObject(response2);
-        JSONArray arr2 = pinObject.getJSONArray("values");
-        String pin = arr2.optString(0);
-        pin = pin.replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
-        //System.out.println(pin);
-        
-        // if PIN doesn't match, then send error. Else continue checking for attendance
-        if ( !(studentPin.equals(pin)) ) {
-        	System.out.println("You have entered an incorrect PIN.");
-        } else {
-        
-            for(int i=0; i<strArr.length; i++) {
-        	    strArr[i] = arr.optString(i);
-            }
-        
-            boolean exists=false;
-        
-            for (int i=0; i<strArr.length; i++) {
-        	    strArr[i] = strArr[i].replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
-  
-        	    if(strArr[i].compareToIgnoreCase(name) == 0 ) {
-        		        rowNum = i+1;
-        		        exists = true;
-        	    }
-            }
-                  
-        	    
-            if (!exists) {
-        	    if (name.equals("Professor")) {
-        		    setPin();
-        	    } else {
-            	    System.out.println("Welcome, " + name + ". Please enter your Student ID to be added to the class.");
-                    Scanner kb = new Scanner(System.in);
-                    String studentID = kb.nextLine();
-            	    rowNum = strArr.length + 1;
-                
-            	    List<Request> requests = new ArrayList<>();
-            	    // ADD NAME TO SHEET
-             	    List<CellData> valuesName = new ArrayList<>();
-             	    List<CellData> valuesID = new ArrayList<>();
-
-                    valuesName.add(new CellData()
-                            .setUserEnteredValue(new ExtendedValue()
-                                .setStringValue((name))));
-             	
-                    requests.add(new Request()
-                        .setUpdateCells(new UpdateCellsRequest()
-                                .setStart(new GridCoordinate()
-                                        .setSheetId(0)
-                                        .setRowIndex(rowNum)     // set the row to row 1 
-                                        .setColumnIndex(0)) // put the name of the student to the list
-                                .setRows(Arrays.asList(
-                                        new RowData().setValues(valuesName)))
-                                .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
-                    BatchUpdateSpreadsheetRequest batchUpdateRequestName = new BatchUpdateSpreadsheetRequest()
-            	        .setRequests(requests);
-            	    service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
-            	        .execute();  
-            	
-                    valuesID.add(new CellData()
-                        .setUserEnteredValue(new ExtendedValue()
-                                .setStringValue((studentID))));
-             	
-                    requests.add(new Request()
-                        .setUpdateCells(new UpdateCellsRequest()
-                                .setStart(new GridCoordinate()
-                                        .setSheetId(0)
-                                        .setRowIndex(rowNum)     // set the row to row 1 
-                                        .setColumnIndex(1)) // put the name of the student to the list
-                                .setRows(Arrays.asList(
-                                        new RowData().setValues(valuesID)))
-                                .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
-                    BatchUpdateSpreadsheetRequest batchUpdateRequestID = new BatchUpdateSpreadsheetRequest()
-            	        .setRequests(requests);
-            	    service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestID)
-            	        .execute();        
-
-
-            	    updateName(name, rowNum);
-
-                }
-            }
+        // Takes the sheets response and puts the existing student names into a string array.
+        for (int i=0; i<strArr.length; i++) {
+        	strArr[i] = arr.optString(i);
         }
+            
+        boolean exists=false;
         
+        // Formats student names. Also checks to see if student name already exists.
+        for (int i=0; i<strArr.length; i++) {
+         strArr[i] = strArr[i].replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
+        	if(strArr[i].compareToIgnoreCase(name) == 0 ) {
+        		    rowNum = i+1;
+        		    exists = true;
+        	}
+        }
+        	    
+        // If existing student is not found, s/he is asked to enter their student ID to be enrolled in the class.
+        if (!exists) {
+        	System.out.println("Welcome, " + name + ". Please enter your Student ID to be added to the class.");
+            Scanner kb = new Scanner(System.in);
+            String studentID = kb.nextLine();
+            rowNum = strArr.length + 1;
+                
+            List<Request> requests = new ArrayList<>();
+            // ADD NAME TO SHEET
+            List<CellData> valuesName = new ArrayList<>();
+            List<CellData> valuesID = new ArrayList<>();
+
+            valuesName.add(new CellData()
+                    .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue((name))));
+             	
+            requests.add(new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(rowNum)     // set the row to row 1 
+                                .setColumnIndex(0)) // put the name of the student to the list
+                        .setRows(Arrays.asList(
+                                new RowData().setValues(valuesName)))
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
+            BatchUpdateSpreadsheetRequest batchUpdateRequestName = new BatchUpdateSpreadsheetRequest()
+                .setRequests(requests);
+            service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
+                .execute();  
+            	
+            valuesID.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue((studentID))));
+             	
+            requests.add(new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(rowNum)     // set the row to row 1 
+                                .setColumnIndex(1)) // put the name of the student to the list
+                        .setRows(Arrays.asList(
+                                new RowData().setValues(valuesID)))
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
+            BatchUpdateSpreadsheetRequest batchUpdateRequestID = new BatchUpdateSpreadsheetRequest()
+                .setRequests(requests);
+            service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestID)
+                .execute();        
+             
+            updateName(name, rowNum);
+            }
         return rowNum;
     }
     
@@ -229,6 +208,7 @@ public class SheetsQuickstart {
      * @param name
      */
     public static void sendReceipt(String email, String name, String subject, String realMessage){
+
     	String to = email;
     	//change this later
     	String from = "ecs@csus.edu";
@@ -264,6 +244,7 @@ public class SheetsQuickstart {
            mex.printStackTrace();
         }
     }
+    
     
     /**
      * This method marks the time a given student records their attendance for a give class period
@@ -336,23 +317,22 @@ public class SheetsQuickstart {
     }
     
     /**
-     * Please insert what updateName does.
+     * This method will insert a new student into the google sheets (name and student ID). Returns a 1 indicating
+     * this is a valid student.
+     * 
      * @param name
-     * @return 
+     * @param rowNum
+     * @return int
      * @throws IOException
      */
-    
     public static int updateName(String name, int rowNum) throws IOException{
 
     	 // Create requests object
          List<Request> requests = new ArrayList<>();
-
          // Build a new authorized API client service.
          Sheets service = getSheetsService();
-
          // Todo: change this text to have your own spreadsheetID
          String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
-         
     	// ADD NAME TO SHEET
      	List<CellData> valuesName = new ArrayList<>();
 
@@ -416,10 +396,27 @@ public class SheetsQuickstart {
    	        .setRequests(requests);
    	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
    	        .execute();
-        
+   	System.out.println("PIN " + pin + " has been set.");        
     }
     
-
+    /**
+     * This method will check to see if the student entered a valid PIN.
+     * @return pin
+     * @throws IOException 
+     */
+    public static String getPin() throws IOException{
+    	Sheets service = getSheetsService();
+        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";  
+    	String val = "D1";
+        Sheets.Spreadsheets.Values.Get request2 = service.spreadsheets().values().get(spreadsheetId, val);
+        ValueRange response2 = request2.execute();
+        JSONObject pinObject = new JSONObject(response2);
+        JSONArray arr2 = pinObject.getJSONArray("values");
+        String pin = arr2.optString(0);
+        return pin = pin.replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
+    	
+    }
+    
     public static void main(String[] args) throws IOException {
        
         Scanner kb = new Scanner(System.in);
@@ -431,8 +428,12 @@ public class SheetsQuickstart {
         } else {
             System.out.println("Please enter the PIN for todays class:");
             String studentPin = kb.nextLine();
-            int row = checkStudent(name, studentPin);
-            markAttendance(row, name);
+            if (studentPin.equals(getPin()) ) {
+            	int row = checkStudent(name);
+                markAttendance(row, name);
+            } else {
+            	System.out.println("You have entered an incorrect PIN!");
+            }
         }
         
         kb.close();
