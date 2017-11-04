@@ -34,8 +34,6 @@ import javax.mail.internet.*;
 import javax.activation.*;
 import org.json.*;
 
-
-
 public class SheetsQuickstart {
     /** Application name. */
     private static final String APPLICATION_NAME =
@@ -203,49 +201,43 @@ public class SheetsQuickstart {
     }
     
     /**
-     * This code was borrowed from https://www.tutorialspoint.com/java/java_sending_email.htm
+     * This code was borrowed from https://stackoverflow.com/questions/37495808/java-send-email-via-gmail
      * @param email
      * @param name
      */
-    public static void sendReceipt(String email, String name, String subject, String realMessage){
+    public static void sendReceipt(String email, String subject, String realMessage) {
+    	String to = email;  
 
-    	String to = email;
-    	//change this later
-    	String from = "ecs@csus.edu";
-    	String host = "localhost";
-    	Properties properties = System.getProperties();
+    	//Get the session object  
+    	Properties props = new Properties();
+    	props.put("mail.smtp.host", "smtp.gmail.com");
+    	props.put("mail.smtp.socketFactory.port", "465");
+    	props.put("mail.smtp.socketFactory.class",
+    			"javax.net.ssl.SSLSocketFactory");
+    	props.put("mail.smtp.auth", "true");
+    	props.put("mail.smtp.port", "465");
 
-        // Setup mail server
-        properties.setProperty("mail.smtp.host", host);
-
-        // Get the default Session object.
-        Session session = Session.getDefaultInstance(properties);
-
-        try {
-           // Create a default MimeMessage object.
-           MimeMessage message = new MimeMessage(session);
-
-           // Set From: header field of the header.
-           message.setFrom(new InternetAddress(from));
-
-           // Set To: header field of the header.
-           message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-
-           // Set Subject: header field
-           message.setSubject(subject);
-
-           // Now set the actual message
-           message.setText(realMessage);
-
-           // Send message
-           Transport.send(message);
-           //System.out.println("Sent message successfully....");
-        }catch (MessagingException mex) {
-           mex.printStackTrace();
-        }
+    	Session session = Session.getDefaultInstance(props,
+            new javax.mail.Authenticator() {
+    			protected PasswordAuthentication getPasswordAuthentication() {
+    				return new PasswordAuthentication("agonz08@gmail.com", "extzhdzabitmjmhm");//change accordingly  
+    			}
+    		});
+    	//compose message  
+    	try {
+    		MimeMessage message = new MimeMessage(session);
+    		message.setFrom(new InternetAddress("ecs@ecs.edu"));//change accordingly  
+    		message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+    		message.setSubject(subject);
+    		message.setText(realMessage);
+    		//send message  
+    		Transport.send(message);
+    		System.out.println("message sent successfully");
+    	} catch (MessagingException e) {
+    		throw new RuntimeException(e);
+    	}
     }
-    
-    
+            
     /**
      * This method marks the time a given student records their attendance for a give class period
      * @param row The row that a students SID is on
@@ -300,20 +292,17 @@ public class SheetsQuickstart {
     	// Prepare request with proper row and column and its value
         System.out.println("Attendence for todays session:");
     	System.out.println(name + ", we have recieved your attendance for today's class at " + timeStamp);
+        //todo make code that gets names from the google doc and emails from the DB
+        String email = "agonz08@me.com";
+        String studentName = name;
+        String subject = "Attendence for todays session";
+        String message = studentName + ", we have recieved your attendance for today's class at " + timeStamp;
+        sendReceipt(email, subject, message);
+
         } catch (IOException e){
         	//if the get request fails.
     		System.out.println("error");
     	}
-        
-        
-        //todo make code that gets names from the google doc and emails from the DB
-        //String email = "agonz08@gmail.com";
-        //String studentName = name;
-        //String subject = "Attendence for todays session";
-        //String message = studentName + ", we have recieved your attendance for today's class at" + timeStamp;
-        //sendReceipt(email, studentName, subject, message);
-    	
-        
     }
     
     /**
@@ -434,10 +423,7 @@ public class SheetsQuickstart {
             } else {
             	System.out.println("You have entered an incorrect PIN!");
             }
-        }
-        
+        }   
         kb.close();
     }
-    
-
 }
