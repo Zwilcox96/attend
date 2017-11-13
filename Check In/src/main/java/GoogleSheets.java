@@ -21,7 +21,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
-//import com.google.api.services.sheets.v4.model.*;
 import com.google.api.services.sheets.v4.Sheets;
 
 public class GoogleSheets {
@@ -69,7 +68,6 @@ public class GoogleSheets {
     public static Credential authorize() throws IOException {
     	
         // Load client secrets.
-        // Todo: Change this text to the location where your client_secret.json resided
         InputStream in = new FileInputStream("client_secret.json");
             // SheetsQuickstart.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =

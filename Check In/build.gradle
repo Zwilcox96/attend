@@ -30,7 +30,11 @@ dependencies {
 
   compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'   
 
-  compile 'com.google.apis:google-api-services-sheets:v4-rev5-1.22.0'       
+  compile 'com.google.apis:google-api-services-sheets:v4-rev5-1.22.0'
+  
+  compile group: 'javax.mail', name: 'mail', version: '1.4.1'
+  
+  compile group: 'org.json', name: 'json', version: '20170516'      
 
  }
 

@@ -2,36 +2,19 @@
 // Todos: Please be sure to update the location of your client_secret.json file & the Googlesheet id before running your program.
 // Author: Doan Nguyen
 // Date: 6/1/17
-/*import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
-import com.google.api.services.sheets.v4.SheetsScopes;*/
 import com.google.api.services.sheets.v4.model.*;
 import com.google.api.services.sheets.v4.Sheets;
 
-//import java.io.FileInputStream;
 import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-//import java.util.Date;
 import java.text.*;
 import java.util.Calendar;
 import java.util.Scanner;
-//import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-//import javax.activation.*;
 import org.json.*;
 
 public class SheetsQuickstart extends GoogleSheets{
@@ -80,7 +63,6 @@ public class SheetsQuickstart extends GoogleSheets{
             rowNum = strArr.length + 1;
                 
             List<Request> requests = new ArrayList<>();
-            // ADD NAME TO SHEET
             List<CellData> valuesName = new ArrayList<>();
             List<CellData> valuesID = new ArrayList<>();
 
@@ -92,8 +74,8 @@ public class SheetsQuickstart extends GoogleSheets{
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
                                 .setSheetId(0)
-                                .setRowIndex(rowNum)     // set the row to row 1 
-                                .setColumnIndex(0)) // put the name of the student to the list
+                                .setRowIndex(rowNum)     // set the row to blank row
+                                .setColumnIndex(0))      // set column to 1
                         .setRows(Arrays.asList(
                                 new RowData().setValues(valuesName)))
                         .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
@@ -110,8 +92,8 @@ public class SheetsQuickstart extends GoogleSheets{
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
                                 .setSheetId(0)
-                                .setRowIndex(rowNum)     // set the row to row 1 
-                                .setColumnIndex(1)) // put the name of the student to the list
+                                .setRowIndex(rowNum)     // set the row
+                                .setColumnIndex(1))      // set column to 1
                         .setRows(Arrays.asList(
                                 new RowData().setValues(valuesID)))
                         .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
@@ -232,12 +214,7 @@ public class SheetsQuickstart extends GoogleSheets{
                         .setStringValue((timeStamp))));
         
         String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";  
-        /*String range = "2:2";
-        Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, range);
-        ValueRange response = request.execute();
-        System.out.println(response);
-        JSONObject jsonObject = new JSONObject(response);
-        JSONArray arr = jsonObject.getJSONArray("values");*/
+
         int column = getColumn() - 1;        
         
         try {
@@ -247,7 +224,7 @@ public class SheetsQuickstart extends GoogleSheets{
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
                                 .setSheetId(0)
-                                .setRowIndex(row)     // set the row to the row that contains the students 
+                                .setRowIndex(row)        // set the row to the row that contains the students 
                                 .setColumnIndex(column)) // set the column to be the column that contains todays attendance 
                         .setRows(Arrays.asList(
                                 new RowData().setValues(valuesNew)))
@@ -259,7 +236,7 @@ public class SheetsQuickstart extends GoogleSheets{
     	// Prepare request with proper row and column and its value
         System.out.println("Attendence for todays session:");
     	System.out.println(name + ", we have recieved your attendance for today's class at " + timeStamp);
-        //todo make code that gets names from the google doc and emails from the DB
+        //to do: make code that gets names from the google doc and emails from the DB
         String email = "agonz08@me.com";
         String studentName = name;
         String subject = "Attendence for todays session";
@@ -278,7 +255,7 @@ public class SheetsQuickstart extends GoogleSheets{
      * 
      * @param name
      * @param rowNum
-     * @return int
+     * @return 1
      * @throws IOException
      */
     public static int updateName(String name, int rowNum) throws IOException{
@@ -287,7 +264,6 @@ public class SheetsQuickstart extends GoogleSheets{
          List<Request> requests = new ArrayList<>();
          // Build a new authorized API client service.
          Sheets service = getSheetsService();
-         // Todo: change this text to have your own spreadsheetID
          String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
     	// ADD NAME TO SHEET
      	List<CellData> valuesName = new ArrayList<>();
@@ -300,8 +276,8 @@ public class SheetsQuickstart extends GoogleSheets{
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
                                 .setSheetId(0)
-                                .setRowIndex(rowNum)     // set the row to row 1 
-                                .setColumnIndex(0)) // put the name of the student to the list
+                                .setRowIndex(rowNum)     // set the row
+                                .setColumnIndex(0)) 	 // set column to 0
                         .setRows(Arrays.asList(
                                 new RowData().setValues(valuesName)))
                         .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
@@ -330,9 +306,7 @@ public class SheetsQuickstart extends GoogleSheets{
         List<Request> requests = new ArrayList<>();
         // Build a new authorized API client service.
         Sheets service = getSheetsService();
-        // Todo: change this text to have your own spreadsheetID
         String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
-   	    // ADD NAME TO SHEET
     	List<CellData> valuesName = new ArrayList<>();
 
        valuesName.add(new CellData()
