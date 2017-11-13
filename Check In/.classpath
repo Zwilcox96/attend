@@ -7,7 +7,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
-	<classpathentry kind="lib" path="D:/CSC131/attend/javax.mail.jar"/>
-	<classpathentry kind="lib" path="D:/CSC131/attend/json-20170516.jar"/>
+	<classpathentry kind="lib" path="/Users/zackwilcox/git/attend/javax.mail.jar"/>
+	<classpathentry kind="lib" path="/Users/zackwilcox/git/attend/json-20170516.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
