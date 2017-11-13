@@ -237,12 +237,13 @@ public class SheetsQuickstart extends GoogleSheets{
         System.out.println("Attendence for todays session:");
     	System.out.println(name + ", we have recieved your attendance for today's class at " + timeStamp);
         //to do: make code that gets names from the google doc and emails from the DB
-        String email = "agonz08@me.com";
+        String email = "asztechcsus@gmail.com";
         String studentName = name;
         String subject = "Attendence for todays session";
         String message = studentName + ", we have recieved your attendance for today's class at " + timeStamp;
-        sendReceipt(email, subject, message);
-
+        //sendReceipt(email, subject, message);
+        Messenger m = new Messenger(email, subject, message);
+        
         } catch (IOException e){
         	//if the get request fails.
     		System.out.println("error");
