@@ -7,7 +7,7 @@ public class Messenger {
 	
 	public Messenger(String email, String subject, String realMessage) {
     
-		String to = email;  
+		String to = email;
 
     	//Get the session object  
     	Properties props = new Properties();
