@@ -26,8 +26,8 @@ public class Instructor {
 	 */
 	Instructor(int iID){
 		instructorID = iID;
-		 Connection conn = null;
-		   Statement stmt = null;
+		Connection conn = null;
+		Statement stmt = null;
 		   try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
