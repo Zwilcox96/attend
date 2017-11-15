@@ -1,12 +1,15 @@
-/*
- * This class is used to create and manipulate students
- * By Zack Wilcox
- * ToDo: add error catching
- */
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-import java.sql.*;
-public class Student {
-	private static int studentID;
+/*
+ * A class to access professor information
+ * Todo: Catch Errors
+ */
+public class Instructor {
+	private static int instructorID;
 	private static String name;
 	private static String email;
 	
@@ -21,8 +24,8 @@ public class Student {
 	/*
 	 * JDBC code is modified from code originally found on tutorialspoint.com
 	 */
-	Student(int sID){
-		studentID = sID;
+	Instructor(int iID){
+		instructorID = iID;
 		 Connection conn = null;
 		   Statement stmt = null;
 		   try{
@@ -37,17 +40,16 @@ public class Student {
 		      System.out.println("Creating statement...");
 		      stmt = conn.createStatement();
 		      String sql;
-		      sql = "SELECT SID, SName, SEmail FROM student " + "WHERE SID = "  + sID;
+		      sql = "SELECT IID, IName, IEmail FROM instructor " + "WHERE IID = "  + iID;
 		      ResultSet rs = stmt.executeQuery(sql);
 
 		      //STEP 5: Extract data from result set
 		      while(rs.next()){
 		         //Retrieve by column name
-		         name = rs.getString("SName");
-		         email = rs.getString("SEmail");
-
+		         name = rs.getString("IName");
+		         email = rs.getString("IEmail");
 		         //Display values
-		         System.out.print("SID: " + sID);
+		         System.out.print("SID: " + iID);
 		         System.out.print(", Name: " + name);
 		         System.out.println(", Email: " + email);
 		      }
@@ -89,6 +91,6 @@ public class Student {
 	}
 	
 	public static int getSID(){
-		return studentID;
+		return instructorID;
 	}
 }

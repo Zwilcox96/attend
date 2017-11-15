@@ -355,6 +355,14 @@ public class SheetsQuickstart extends GoogleSheets{
         
         if (name.equals("Professor")) {
         	setPin();
+        } else if(name.equals("reg")) {
+        	//Register.createInstructor(1234, "test@test.edu", "Tester Testersmith", "hi mom");
+        	Instructor i = new Instructor(1234);
+        	String def = i.getEmail();
+        	System.out.println(def);
+        	Student s = new Student(1234);
+        	int abc = s.getSID();
+        	System.out.println(abc);
         } else {
             System.out.println("Please enter the PIN for todays class:");
             String studentPin = kb.nextLine();
