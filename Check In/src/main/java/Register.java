@@ -9,8 +9,16 @@ public class Register {
 	static final String DB_URL = "jdbc:mysql://localhost/attend?autoReconnect=true&useSSL=false";
 	static final String USER = "root";
 	static final String PASS = "password";
+	
+	/**
+	 * This method creates a new student and adds them to a database.
+	 * JDBC code is modified from code originally found on tutorialspoint.com
+	 * @param sid The student's ID number
+	 * @param email The student's Email address.
+	 * @param name The student's name.
+	 * @param password The password the student will use to log in.
+	 */
 	public static void createStudent(int sid, String email, String name, String password){
-		//todo: create a method to add students
 		Connection conn = null;
 		Statement stmt = null;
 		try{
@@ -50,6 +58,14 @@ public class Register {
 		   }//end try
 	}
 	
+	/**
+	 * This method creates a new instructor and adds them to a database.
+	 * JDBC code is modified from code originally found on tutorialspoint.com
+	 * @param iid The ID number of the instructor.
+	 * @param email The Email address of the instructor.
+	 * @param name The name of the instructor.
+	 * @param password The password that the instructor will use to log in.
+	 */
 	public static void createInstructor(int iid, String email, String name, String password){
 		Connection conn = null;
 		Statement stmt = null;
@@ -88,9 +104,5 @@ public class Register {
 		         se.printStackTrace();
 		      }//end finally try
 		   }//end try
-	}
-	
-	public static void main(String args[]){
-		
 	}
 }

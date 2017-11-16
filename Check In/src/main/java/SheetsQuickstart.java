@@ -365,9 +365,13 @@ public class SheetsQuickstart extends GoogleSheets{
         	int abc = s.getSID();
         	System.out.println(abc);
         	*/
-        	Course c = new Course(5555, "CSC 131", 1234);
+        	Course c = new Course(5555);
         	Student s = new Student(1234);
-        	c.addStudent(s);
+        	Instructor hi = new Instructor(1234);
+        	Course[] sc = s.getCourses();
+        	Course[] hic = s.getCourses();
+        	System.out.println(sc[0].getCourseName());
+        	System.out.println(hic[0].getCourseName());
         } else {
             System.out.println("Please enter the PIN for todays class:");
             String studentPin = kb.nextLine();

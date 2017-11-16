@@ -9,13 +9,20 @@ import java.sql.*;
 public class Course {
 	private static int callNumber;
 	private static String courseName;
-	private static int instructor;
+	private static Instructor instructor;
 	//SQL values
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
 	static final String DB_URL = "jdbc:mysql://localhost/attend?autoReconnect=true&useSSL=false";
 	static final String USER = "root";
 	static final String PASS = "password";
 	
+	/**
+	 * This constructor makes a new Course and stores it in our database.
+	 * JDBC code is modified from code originally found on tutorialspoint.com
+	 * @param cNumber The call number of a course.
+	 * @param cName The name of a course.
+	 * @param cInstructor The IID of the instructor teaching a course.
+	 */
 	Course(int cNumber, String cName, int cInstructor){
 		callNumber = cNumber;
 		
@@ -58,6 +65,10 @@ public class Course {
 		   }//end try
 	}
 	
+	/**
+	 * This constructor loads a course using our database.
+	 * @param cNumber The call number of a course.
+	 */
 	Course(int cNumber){
 		callNumber = cNumber;
 		Connection conn = null;
@@ -81,11 +92,11 @@ public class Course {
 		      while(rs.next()){
 		         //Retrieve by column name
 		         courseName = rs.getString("CourseName");
-		         instructor = rs.getInt("Instructor");
+		         instructor = new Instructor(rs.getInt("Instructor"));
 		         //Display values
 		         System.out.print("Call Number: " + callNumber);
 		         System.out.print(", Course Name: " + courseName);
-		         System.out.println(", Instructor: " + instructor);
+		         System.out.println(", Instructor: " + instructor.getName());
 		      }
 		      //STEP 6: Clean-up environment
 		      rs.close();
@@ -114,6 +125,11 @@ public class Course {
 		   //System.out.println("Goodbye!");
 	}
 	
+	/**
+	 * This method enrolls a student in a course.
+	 * JDBC code is modified from code originally found on tutorialspoint.com
+	 * @param S The SID of a student.
+	 */
 	public static void addStudent(Student S){
 
 		Connection conn = null;
@@ -155,14 +171,26 @@ public class Course {
 		   }//end try
 	}
 	
-	public static int getIntsructor(){
+	/**
+	 * This method returns the Instructor of a course.
+	 * @return The course Instructor.
+	 */
+	public static Instructor getIntsructor(){
 		return instructor;
 	}
 	
+	/**
+	 * This method returns the call number of a course.
+	 * @return The call number of a course.
+	 */
 	public static int getCallNumber(){
 		return callNumber;
 	}
 	
+	/**
+	 * This method returns the name of a course.
+	 * @return The name of a course.
+	 */
 	public static String getCourseName(){
 		return courseName;
 	}

@@ -17,9 +17,10 @@ public class Student {
 	static final String PASS = "password";
 	
 	
-	//make a constructor for a given student
-	/*
+	/**
+	 * This constructor takes a Student's ID number and creates a Student with info from our database.
 	 * JDBC code is modified from code originally found on tutorialspoint.com
+	 * @param sID The ID number of the Student.
 	 */
 	Student(int sID){
 		studentID = sID;
@@ -78,16 +79,95 @@ public class Student {
 		   //System.out.println("Goodbye!");
 		}//end main
 		
+	/**
+	 * This method finds all of the courses s student is taking 
+	 * and returns them in an array.
+	 * @return An array of courses that this student takes.
+	 */
+	public static Course[] getCourses(){
+		Connection conn = null;
+		 Statement stmt = null;
+		   try{
+		      //STEP 2: Register JDBC driver
+		      Class.forName("com.mysql.jdbc.Driver");
 
+		      //STEP 3: Open a connection
+		      //System.out.println("Connecting to database...");
+		      conn = DriverManager.getConnection(DB_URL,USER,PASS);
+
+		      //STEP 4: Execute a query
+		      //System.out.println("Creating statement...");
+		      stmt = conn.createStatement();
+		      String sql;
+		      sql = "SELECT CallNumber FROM enrolled " + "WHERE SID = "  + studentID;
+		      ResultSet rs = stmt.executeQuery(sql);
+
+		      //STEP 5: Extract data from result set and place in an array
+		      //Find the size of the required array
+		      int size=0;
+		      while (rs.next()) {
+		          size++;
+		      }
+		      //Create array for courses and reset the result list pointer.
+		      Course[] courses = new Course[size];
+		      rs.first();		  
+		      //Fill Array with courses
+		      int counter = 0;
+		      while(rs.next()){
+		         //Retrieve by column name
+		         Course c = new Course(rs.getInt("CallNumber"));
+		         courses[counter] = c;
+		      }
+		      //STEP 6: Clean-up environment
+		      rs.close();
+		      stmt.close();
+		      conn.close();
+		      return courses;
+		   }catch(SQLException se){
+		      //Handle errors for JDBC
+		      se.printStackTrace();
+		   }catch(Exception e){
+		      //Handle errors for Class.forName
+		      e.printStackTrace();
+		   }finally{
+		      //finally block used to close resources
+		      try{
+		         if(stmt!=null)
+		            stmt.close();
+		      }catch(SQLException se2){
+		      }// nothing we can do
+		      try{
+		         if(conn!=null)
+		            conn.close();
+		      }catch(SQLException se){
+		         se.printStackTrace();
+		      }//end finally try
+		      
+		   }//end try
+		return null;
+		   
+	}
 	
+	/**
+	 * This method will give you the email of a Student.
+	 * @return The email of a Student.
+	 */
 	public static String getEmail(){
 		return email;
 	}
 	
+	/**
+	 * This method will give you the name of a student
+	 * @return The name of a Student.
+	 */
 	public static String getName(){
 		return name;
 	}
 	
+	/**
+	 * This method will give you the SID of a Student.
+	 * @return The SID of a Student.
+	 */
 	public static int getSID(){
 		return studentID;
 	}
