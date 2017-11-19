@@ -19,7 +19,13 @@ public class ClassSession {
 		parentCourse = pCourse;
 		closeTime = endTime;
 		pin = nPin;
-		//todo: make a sessionID creator.
+		if(getLastID() != 0) {
+			sessionID = getLastID() + 1;
+		}
+		else
+		{
+			sessionID = parentCourse.getCallNumber()*1000;
+		}
 	}
 	
 	public static void attend(Student student, Date timeStamp, int enteredPin){

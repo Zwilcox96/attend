@@ -100,7 +100,7 @@ public class GoogleSheets {
     }
     
     /**
-     * Finds and returns the last column
+     * Finds and returns the last column in the spreadsheet
      * @return column
      */
     public static int getColumn() throws IOException{
@@ -113,6 +113,7 @@ public class GoogleSheets {
         
         ValueRange result = service.spreadsheets().values().get(spreadsheetId, range).setMajorDimension("COLUMNS").execute();
         int column = result.getValues() != null ? result.getValues().size() : 0;
+        
     	return column;
     }
     
