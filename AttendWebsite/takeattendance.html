@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+
+<html>
+
+    <head>
+        <title>Create A Class</title>
+        <link rel="stylesheet" type="text/css" href="resources/css/style.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/grid.css">
+
+    </head>
+    
+    <body>
+        <ul class="main-nav">
+            <li><a href="takeattendance.html">Take Attendance</a></li>
+            <li><a href="makeclass.html" class="active">Create a Class</a></li>
+            <li><a href="professorSignUp.html">Register</a></li>
+            <li><a href="attendaclass.html">Switch to Student</a></li>
+        </ul>
+        <div class="container">
+            <div class="user-form row">
+                <h1>Let's Take Attendance</h1>
+                <form method="post" action="#" class="contact-form">
+                    <h3>What is the call number for this class?</h3>
+                    <div class="row">
+                        <input type="text" name="callNumber" id="call_Number" placeholder="86753" required>
+                    </div>
+                    <h3>How long should the attendance window be?</h3>
+                    <div class="row">
+                        <select name="time" id="time">
+                                <option value="1" selected>1 Minute</option>
+                                <option value="2" >2 Minutes</option>
+                                <option value="3" >3 Minutes</option>
+                                <option value="4" >4 Minutes</option>
+                                <option value="5" >5 Minutes</option>
+                            </select>
+                    </div>
+                    <h3>What is the pin for this class?</h3>
+                    <div class="row">
+                        <input type="text" name="classPin" id="class_pin" placeholder="1234" required maxlength="4">
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="Take attendance">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
