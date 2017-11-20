@@ -157,11 +157,12 @@ public class GoogleSheets {
      * @return rowNum
      * @throws IOException 
      */
-    public static int checkStudent(String name) throws IOException {
+    public static int checkStudent(int SID) throws IOException {
     	// Build a new authorized API client service.
+    	String sSID = Integer.toString(SID);
         Sheets service = getSheetsService();
         String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";   
-        String range = "A2:A50";
+        String range = "B:B";
         int rowNum = -1;
         Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, range);
         ValueRange response = request.execute();
@@ -179,8 +180,8 @@ public class GoogleSheets {
         // Formats student names. Also checks to see if student name already exists.
         for (int i=0; i<strArr.length; i++) {
          strArr[i] = strArr[i].replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
-        	if(strArr[i].compareToIgnoreCase(name) == 0 ) {
-        		    rowNum = i+1;
+        	if(strArr[i].compareToIgnoreCase(sSID) == 0 ) {
+        		    rowNum = i;
         		    exists = true;
         	}
         }

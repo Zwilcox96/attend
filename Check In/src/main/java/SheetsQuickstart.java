@@ -68,8 +68,8 @@ public class SheetsQuickstart extends GoogleSheets{
 	        	c.override(c, s, true);
 	        } else if(name.equals("reg")) {
 	        	
-	        	//Course c = new Course(5555);
-	        	//c.makeNewSession(727, 10);
+	        	Course c = new Course(5555);
+	        	c.makeNewSession(747, 10);
 	        	//Register.createStudent(4444, "zwilcox96@gmail.com", "Trump", "Holdmybeer");
 	        	
 	        } else {

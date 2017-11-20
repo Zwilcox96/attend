@@ -161,7 +161,7 @@ public class ClassSession {
 		      stmt.executeUpdate(sql);
 		      String subject = "Attendance for session: " + sessionID;
 		      if(correct == 1){
-		    	  int row = GoogleSheets.checkStudent(student.getName());
+		    	  int row = GoogleSheets.checkStudent(student.getSID());
 		    	  GoogleSheets.markAttendance(row, student.getName());
 		    	  message = "Thank you for attending class today! %n Today's date: " 
 		      +  new java.sql.Timestamp(curDate.getTimeInMillis()) + "%n Today's Session Number: " + sessionID;
@@ -211,7 +211,7 @@ public class ClassSession {
 			      String sql = "UPDATE attendance " +
 			                   "SET correct = 1 WHERE SID = '" + S.getSID() + "' AND SessionID = '" + ses.getSessionID() + "'";
 			      stmt.executeUpdate(sql);
-			      int row = GoogleSheets.checkStudent(S.getName());
+			      int row = GoogleSheets.checkStudent(S.getSID());
 			      GoogleSheets.markAttendance(row, S.getName(), ses.getDate());
 		      } else {
 		    	  System.out.println("Creating statement...");
