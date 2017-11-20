@@ -12,6 +12,7 @@ public class Register {
 	
 	/**
 	 * This method creates a new student and adds them to a database.
+	 * The code then email's the student to confirm registration.
 	 * JDBC code is modified from code originally found on tutorialspoint.com
 	 * @param sid The student's ID number
 	 * @param email The student's Email address.
@@ -36,6 +37,7 @@ public class Register {
 		      sql = "INSERT INTO student VALUES('"+ sid+"', '" + email +"', '"+ name + "', '"+ password+ "');";
 		      System.out.println(sql);
 		      stmt.executeUpdate(sql);
+		      Messenger m = new Messenger(email, "Welcome to I'm here!", "Thank you for registering!");
 		}catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();
@@ -60,6 +62,7 @@ public class Register {
 	
 	/**
 	 * This method creates a new instructor and adds them to a database.
+	 * The code then email's the instructor to confirm registration.
 	 * JDBC code is modified from code originally found on tutorialspoint.com
 	 * @param iid The ID number of the instructor.
 	 * @param email The Email address of the instructor.
@@ -84,6 +87,7 @@ public class Register {
 		      sql = "INSERT INTO instructor VALUES('"+ iid+"', '" + email +"', '"+ name + "', '"+ password+ "');";
 		      System.out.println(sql);
 		      stmt.executeUpdate(sql);
+		      Messenger m = new Messenger(email, "Welcome to I'm here!", "Thank you for registering!");
 		}catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();

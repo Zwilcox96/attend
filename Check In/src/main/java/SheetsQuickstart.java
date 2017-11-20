@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Date;
 import java.util.Properties;
 import java.text.*;
 import java.util.Calendar;
@@ -16,6 +17,7 @@ import java.util.Scanner;
 import javax.mail.*;
 import javax.mail.internet.*;
 import org.json.*;
+
 
 public class SheetsQuickstart extends GoogleSheets{
 	
@@ -351,39 +353,33 @@ public class SheetsQuickstart extends GoogleSheets{
     public static void main(String[] args) throws IOException {
        
         Scanner kb = new Scanner(System.in);
-        System.out.println("Please enter your name:");
+        System.out.println("Please enter your SID:");
         String name = kb.nextLine();
+        while(!name.equals("bye")){
         
-        if (name.equals("Professor")) {
-        	setPin();
-        } else if(name.equals("reg")) {
-        	Register.createInstructor(1234, "test@test.edu", "Tester Testersmith", "hi mom");
-        	Instructor i = new Instructor(1234);
-        	String def = i.getEmail();
-        	System.out.println(def);
-        	/*
-        	Student s = new Student(1234);
-        	int abc = s.getSID();
-        	System.out.println(abc);
-        	
-        	Course c = new Course(5555);
-        	Student s = new Student(1234);
-        	Instructor hi = new Instructor(1234);
-        	Course[] sc = s.getCourses();
-        	Course[] hic = s.getCourses();
-        	System.out.println(sc[0].getCourseName());
-        	System.out.println(hic[0].getCourseName());
-        	*/
-        } else {
-            System.out.println("Please enter the PIN for todays class:");
-            String studentPin = kb.nextLine();
-            if (studentPin.equals(getPin()) ) {
-            	int row = checkStudent(name);
-                markAttendance(row, name);
-            } else {
-            	System.out.println("You have entered an incorrect PIN!");
-            }
-        }   
+	        if (name.equals("Professor")) {
+	        	Student s = new Student(3333);
+	        	ClassSession c = new ClassSession(5555004);
+	        	c.override(c, s, true);
+	        } else if(name.equals("reg")) {
+	        	
+	        	Course c = new Course(5555);
+	        	c.makeNewSession(727, 10);
+	        	
+	        } else {
+	        	Calendar time = Calendar.getInstance();
+	        	Student student = new Student(Integer.parseInt(name));
+	            System.out.println("Please enter the call number for this class:");
+	            String cNumber = kb.nextLine();
+	            Course c = new Course(Integer.parseInt(cNumber));
+	            System.out.println("Please enter the PIN for todays class:");
+	            String studentPin = kb.nextLine();
+	            ClassSession sesh = c.getClassSession();
+	            sesh.attend(student, time, Integer.parseInt(studentPin));
+	        }   
+	        System.out.println("Please enter your SID:");
+	        name = kb.nextLine();
+        }
         kb.close();
     }
 }
