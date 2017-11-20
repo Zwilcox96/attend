@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -133,6 +132,24 @@ public class GoogleSheets {
     }
     
     /**
+     * Finds and returns the last row in the spreadsheet.
+     * @return The last row in the spreadsheet.
+     */
+    public static int getRow() throws IOException{
+        // Build a new authorized API client service.
+        Sheets service = getSheetsService();
+        
+        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
+        
+        String range = "A:A";
+        
+        ValueRange result = service.spreadsheets().values().get(spreadsheetId, range).setMajorDimension("ROWS").execute();
+        int row = result.getValues() != null ? result.getValues().size() : 0;
+        
+    	return row;
+    }
+    
+    /**
      * This method will check to see if the student name/id is already listed in the sheet. If the name/id is not found, this 
      * indicates the student has not signed in before and should be added to the first empty row available. If the student is found,
      * then the location on the sheet should be determined in order to correctly mark the attendance.
@@ -168,57 +185,43 @@ public class GoogleSheets {
         	}
         }
         	    
-        // If existing student is not found, s/he is asked to enter their student ID to be enrolled in the class.
-        if (!exists) {
-        	System.out.println("Welcome, " + name + ". Please enter your Student ID to be added to the class.");
-            Scanner kb = new Scanner(System.in);
-            String studentID = kb.nextLine();
-            rowNum = strArr.length + 1;
-                
-            List<Request> requests = new ArrayList<>();
-            List<CellData> valuesName = new ArrayList<>();
-            List<CellData> valuesID = new ArrayList<>();
-
-            valuesName.add(new CellData()
-                    .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue((name))));
-             	
-            requests.add(new Request()
-                .setUpdateCells(new UpdateCellsRequest()
-                        .setStart(new GridCoordinate()
-                                .setSheetId(0)
-                                .setRowIndex(rowNum)     // set the row to blank row
-                                .setColumnIndex(0))      // set column to 1
-                        .setRows(Arrays.asList(
-                                new RowData().setValues(valuesName)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
-            BatchUpdateSpreadsheetRequest batchUpdateRequestName = new BatchUpdateSpreadsheetRequest()
-                .setRequests(requests);
-            service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
-                .execute();  
-            	
-            valuesID.add(new CellData()
-                .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue((studentID))));
-             	
-            requests.add(new Request()
-                .setUpdateCells(new UpdateCellsRequest()
-                        .setStart(new GridCoordinate()
-                                .setSheetId(0)
-                                .setRowIndex(rowNum)     // set the row
-                                .setColumnIndex(1))      // set column to 1
-                        .setRows(Arrays.asList(
-                                new RowData().setValues(valuesID)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
-            BatchUpdateSpreadsheetRequest batchUpdateRequestID = new BatchUpdateSpreadsheetRequest()
-                .setRequests(requests);
-            service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestID)
-                .execute();        
-             
-            updateName(name, rowNum);
-            kb.close();
-            }
         return rowNum;
+    }
+    
+    public static int findDate(Calendar date) throws IOException {
+    	// Build a new authorized API client service.
+        Sheets service = getSheetsService();
+        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";   
+        String range = "A1:Z1";
+        int columnNum = -1;
+        Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, range);
+        ValueRange response = request.execute();
+        JSONObject jsonObject = new JSONObject(response);
+        JSONArray arr = jsonObject.getJSONArray("values");
+        String[] strArr = new String[arr.length()];
+        
+        
+        // Takes the sheets response and puts the existing student names into a string array.
+        for (int i=0; i<strArr.length; i++) {
+        	strArr[i] = arr.optString(i);
+        }
+        
+        String[] splitArr = strArr[0].split("[,]");
+            
+        String timeStamp = new SimpleDateFormat("MM/dd/YYYY").format(date.getTime());
+        boolean exists=false;
+        //System.out.println(splitArr.toString());
+        // Formats student names. Also checks to see if student name already exists.
+        for (int i=0; i<splitArr.length; i++) {
+         splitArr[i] = splitArr[i].replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
+         //System.out.println(splitArr[i]);
+        	if(splitArr[i].compareToIgnoreCase(timeStamp) == 0 ) {
+        		    columnNum = i+1;
+        		    exists = true;
+        	}
+        }
+        	    
+        return columnNum;
     }
     
     /**
@@ -251,7 +254,7 @@ public class GoogleSheets {
                         .setStart(new GridCoordinate()
                                 .setSheetId(0)
                                 .setRowIndex(0)     // set the row to row 1 
-                                .setColumnIndex(column)) // put the name of the student to the list
+                                .setColumnIndex(column)) // set the column to the next column
                         .setRows(Arrays.asList(
                                 new RowData().setValues(values)))
                         .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
@@ -308,6 +311,8 @@ public class GoogleSheets {
     	        .setRequests(requests);
     	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestNew)
     	        .execute();   
+    	
+    	/*
     	// Prepare request with proper row and column and its value
         System.out.println("Attendence for todays session:");
     	System.out.println(name + ", we have recieved your attendance for today's class at " + timeStamp);
@@ -318,11 +323,79 @@ public class GoogleSheets {
         String message = studentName + ", we have recieved your attendance for today's class at " + timeStamp;
         //sendReceipt(email, subject, message);
         Messenger m = new Messenger(email, subject, message);
-        
+        */
         } catch (IOException e){
         	//if the get request fails.
     		System.out.println("error");
     	}
+    	
+    }
+    
+    /**
+     * This method marks the time a given student records their attendance for a give class period
+     * @param row The row that a students SID is on
+     * @throws IOException when a spreadsheet cannot be reached
+     */
+    public static void markAttendance(int row, String name, Calendar date) throws IOException{
+    	
+    	// THIS CREATES A CURRENT TIME STAMP TO BE USED IN SHEETS
+   	    String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+   	    // Create requests object
+        List<Request> requests = new ArrayList<>();
+        // Create values object
+        List<CellData> values = new ArrayList<>();
+ 
+        values.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue((timeStamp))));
+        
+        // Build a new authorized API client service.
+        Sheets service = getSheetsService();
+
+        List<CellData> valuesNew = new ArrayList<>();
+        // Add string of current time in HH:mm:ss format
+        valuesNew.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue((timeStamp))));
+        
+        String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";  
+
+        int column = findDate(date) - 1;        
+        System.out.println(column);
+        try {
+        //getDate();
+        // Prepare request to mark a time stamp on the google sheet.
+        requests.add(new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(row)        // set the row to the row that contains the students 
+                                .setColumnIndex(column)) // set the column to be the column that contains todays attendance 
+                        .setRows(Arrays.asList(
+                                new RowData().setValues(valuesNew)))
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
+        BatchUpdateSpreadsheetRequest batchUpdateRequestNew = new BatchUpdateSpreadsheetRequest()
+    	        .setRequests(requests);
+    	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestNew)
+    	        .execute();   
+    	
+    	/*
+    	// Prepare request with proper row and column and its value
+        System.out.println("Attendence for todays session:");
+    	System.out.println(name + ", we have recieved your attendance for today's class at " + timeStamp);
+        //to do: make code that gets names from the google doc and emails from the DB
+        String email = "asztechcsus@gmail.com";
+        String studentName = name;
+        String subject = "Attendence for todays session";
+        String message = studentName + ", we have recieved your attendance for today's class at " + timeStamp;
+        //sendReceipt(email, subject, message);
+        Messenger m = new Messenger(email, subject, message);
+        */
+        } catch (IOException e){
+        	//if the get request fails.
+    		System.out.println("error");
+    	}
+    	
     }
     
     /**
@@ -334,7 +407,7 @@ public class GoogleSheets {
      * @return 1
      * @throws IOException
      */
-    public static int updateName(String name, int rowNum) throws IOException{
+    public static int updateName(String name, int SID) throws IOException{
 
     	 // Create requests object
          List<Request> requests = new ArrayList<>();
@@ -348,29 +421,38 @@ public class GoogleSheets {
                 .setUserEnteredValue(new ExtendedValue()
                         .setStringValue((name))));
      	
+        valuesName.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setNumberValue((double) (SID))));
+        
         requests.add(new Request()
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
                                 .setSheetId(0)
-                                .setRowIndex(rowNum)     // set the row
+                                .setRowIndex(getRow())     // set the row
                                 .setColumnIndex(0)) 	 // set column to 0
                         .setRows(Arrays.asList(
                                 new RowData().setValues(valuesName)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));        
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+        
+
+        
+        
         BatchUpdateSpreadsheetRequest batchUpdateRequestName = new BatchUpdateSpreadsheetRequest()
     	        .setRequests(requests);
     	service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequestName)
-    	        .execute();        
+    	        .execute(); 
+    	
     	
     	return 1;
    
     }
-    
+    /*
     /**
      * Allows instructor to set a PIN for the class. Student must enter a matching PIN in order to be 
      * marked as present. Currently, hard-coded to D1 cell.
      * @throws IOException
-     */
+     *
     public static void setPin() throws IOException{
     	
     	Scanner kb = new Scanner(System.in);
@@ -404,12 +486,14 @@ public class GoogleSheets {
    	        .execute();
    	System.out.println("PIN " + pin + " has been set.");        
     }
+    */
     
+    /*
     /**
      * This method will check to see if the student entered a valid PIN.
      * @return pin
      * @throws IOException 
-     */
+     *
     public static String getPin() throws IOException{
     	Sheets service = getSheetsService();
         String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";  
@@ -422,5 +506,6 @@ public class GoogleSheets {
         return pin = pin.replaceAll("\\[","").replaceAll("\\]", "").replaceAll("\"", "");
     	
     }
+    */
     
 }

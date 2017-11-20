@@ -37,6 +37,7 @@ public class Register {
 		      sql = "INSERT INTO student VALUES('"+ sid+"', '" + email +"', '"+ name + "', '"+ password+ "');";
 		      System.out.println(sql);
 		      stmt.executeUpdate(sql);
+		      GoogleSheets.updateName(name, sid);
 		      Messenger m = new Messenger(email, "Welcome to I'm here!", "Thank you for registering!");
 		}catch(SQLException se){
 		      //Handle errors for JDBC

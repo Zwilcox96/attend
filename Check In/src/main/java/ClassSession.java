@@ -46,6 +46,7 @@ public class ClassSession {
 		      + sessionID + "', '"+ pin+"');";
 		      System.out.println(sql);
 		      stmt.executeUpdate(sql);
+		      GoogleSheets.getDate();
 		}catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();
@@ -160,6 +161,8 @@ public class ClassSession {
 		      stmt.executeUpdate(sql);
 		      String subject = "Attendance for session: " + sessionID;
 		      if(correct == 1){
+		    	  int row = GoogleSheets.checkStudent(student.getName());
+		    	  GoogleSheets.markAttendance(row, student.getName());
 		    	  message = "Thank you for attending class today! %n Today's date: " 
 		      +  new java.sql.Timestamp(curDate.getTimeInMillis()) + "%n Today's Session Number: " + sessionID;
 		      } else {
@@ -208,6 +211,8 @@ public class ClassSession {
 			      String sql = "UPDATE attendance " +
 			                   "SET correct = 1 WHERE SID = '" + S.getSID() + "' AND SessionID = '" + ses.getSessionID() + "'";
 			      stmt.executeUpdate(sql);
+			      int row = GoogleSheets.checkStudent(S.getName());
+			      GoogleSheets.markAttendance(row, S.getName(), ses.getDate());
 		      } else {
 		    	  System.out.println("Creating statement...");
 			      stmt = conn.createStatement();
@@ -284,6 +289,10 @@ public class ClassSession {
 	
 	public static int getSessionID(){
 		return sessionID;
+	}
+	
+	public static Calendar getDate(){
+		return closeTime;
 	}
 	
 }
