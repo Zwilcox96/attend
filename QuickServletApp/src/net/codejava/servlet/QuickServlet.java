@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import temp.SheetsQuickstart;
-//import temp.GoogleSheets;
+import temp.GoogleSheets;
 
 public class QuickServlet extends HttpServlet {
 
@@ -18,6 +18,8 @@ public class QuickServlet extends HttpServlet {
 	 */
 	public void init(ServletConfig config) {
 		System.out.println("Servlet is being initialized");
+		System.out.println("Working Directory = " +
+	              System.getProperty("user.dir"));
 	}
 
 	/**
@@ -27,8 +29,8 @@ public class QuickServlet extends HttpServlet {
 			throws IOException {
 
 		PrintWriter writer = response.getWriter();
-		System.out.println("Working Directory = " +
-	              System.getProperty("user.dir"));
+		/*System.out.println("Working Directory = " +
+	              System.getProperty("user.dir"));*/
 		SheetsQuickstart.updateSheets();
 		writer.println("<html>Hello, I am a Java servlet!</html>");
 		writer.flush();
@@ -39,18 +41,16 @@ public class QuickServlet extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		String paramWidth = request.getParameter("width");
-		int width = Integer.parseInt(paramWidth);
-
-		String paramHeight = request.getParameter("height");
-		int height = Integer.parseInt(paramHeight);
-
-		long area = width * height;
-
 		PrintWriter writer = response.getWriter();
-		writer.println("<html>Area of the rectangle is: " + area + "</html>");
+		String yourID = request.getParameter("student_id");
+		String pin = request.getParameter("classPin");
+		if (pin.equals(GoogleSheets.getPin()) ) {
+        	int row = GoogleSheets.checkStudent(yourID);
+            GoogleSheets.markAttendance(row, yourID);
+		}
+		//request.getParameter("");
+		writer.println("<html>message sent successfully</html>");
 		writer.flush();
-
 	}
 
 	/**

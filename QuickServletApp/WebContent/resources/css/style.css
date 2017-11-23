@@ -43,6 +43,38 @@ h3 {
    
 }
 
+/---Buttons---/
+
+.button:link,
+.button:visited,
+input[type=submit] {
+    display: inline-block;
+    padding: 10px 30px;
+    font-weight: 300;
+    text-decoration: none;
+    border-radius: 200px;
+    transition: background-color 0.2s, border 0.2s, color 0.2s;
+    background-color: #b9090b;
+    border: 1px solid #b9090b;
+    color: #fff;
+    margin-right: 15px;
+}
+
+.button-full:link,
+.button-full:visited,
+input[type=submit] {
+    display: inline-block;
+    padding: 10px 30px;
+    font-weight: 300;
+    text-decoration: none;
+    border-radius: 200px;
+    transition: background-color 0.2s, border 0.2s, color 0.2s;
+    background-color: #b9090b;
+    border: 1px solid #b9090b;
+    color: #fff;
+    margin-right: 15px;
+    font-size: inherit;
+}
 .user-form {
     background-color: #ffffff;
     padding: 20px;
@@ -60,6 +92,7 @@ h3 {
 
 input[type=text],
 input[type=email],
+input[type=password],
 select,
 textarea{
     width: 100%;
@@ -69,6 +102,7 @@ textarea{
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
+    font: inherit;
 }
 
 textarea {
@@ -119,7 +153,7 @@ ul {
 
 input[type=text],
 input[type=email],
-input[type=number],
+input[type=password],
 select,
 textarea{
     width: 100%;
@@ -129,4 +163,5 @@ textarea{
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
+    text-align: center;
 }
