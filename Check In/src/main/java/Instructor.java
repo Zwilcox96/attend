@@ -12,7 +12,8 @@ public class Instructor {
 	
 	//These variables are for the database connection
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect=true&useSSL=false";
+	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect"
+			+ "=true&useSSL=false";
 	static final String USER = "letsstore";
 	static final String PASS = "iloveherky";
 	
@@ -38,7 +39,7 @@ public class Instructor {
 
 		      //STEP 4: Execute a query
 		      System.out.println("Creating statement...");
-		      PreparedStatement stmt = conn.prepareStatement("SELECT IID, IName, IEmail FROM instructor " + "WHERE IID = ?");
+		      PreparedStatement stmt = conn.prepareStatement("SELECT IID, IName, IEmail FROM instructor WHERE IID = ?");
 		      stmt.setInt(1, iID);
 		      ResultSet rs = stmt.executeQuery();
 

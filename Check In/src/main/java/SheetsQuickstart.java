@@ -68,12 +68,12 @@ public class SheetsQuickstart extends GoogleSheets{
 	        	c.override(c, s, true);
 	        } else if(name.equals("reg")) {
 	        	
-	        	//Course c = new Course(5555);
+	        	Course c = new Course(4444, "Dance 130", 9999);
 	        	//c.makeNewSession(747, 10);
 	        	
 	        	//Student s = new Student(9001);
 	        	//c.addStudent(s);
-	        	Register.createInstructor(9999, "zwilcox96@gmail.com", "Kim Jung Un", "Best Korea");
+	        	//Register.createInstructor(9999, "zwilcox96@gmail.com", "Kim Jung Un", "Best Korea");
 	        	
 	        } else {
 	        	Calendar time = Calendar.getInstance();

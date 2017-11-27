@@ -14,7 +14,8 @@ public class Course {
 	private static ClassSession currentSession;
 	//SQL values
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect=true&useSSL=false";
+	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect"
+			+ "=true&useSSL=false";
 	static final String USER = "letsstore";
 	static final String PASS = "iloveherky";
 	
@@ -30,7 +31,6 @@ public class Course {
 		callNumber = cNumber;
 		
 		Connection conn = null;
-		Statement stmt = null;
 		try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -41,11 +41,11 @@ public class Course {
 
 		      //STEP 4: Execute a query
 		      System.out.println("Creating statement...CNC");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "INSERT INTO course VALUES('"+ cNumber +"', '" + cName +"', '"+ cInstructor + "');";
-		      System.out.println(sql);
-		      stmt.executeUpdate(sql);
+		      PreparedStatement stmt = conn.prepareStatement("INSERT INTO course VALUES(?, ?, ?);");
+		      stmt.setInt(1, cNumber);
+		      stmt.setString(2, cName);
+		      stmt.setInt(3, cInstructor);
+		      stmt.executeUpdate();
 		}catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();
@@ -54,11 +54,6 @@ public class Course {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
-		         if(stmt!=null)
-		            conn.close();
-		      }catch(SQLException se){
-		      }// do nothing
 		      try{
 		         if(conn!=null)
 		            conn.close();
@@ -76,8 +71,6 @@ public class Course {
 		
 		callNumber = cNumber;
 		Connection conn = null;
-		//Statement stmt = null;
-		
 		   try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -88,7 +81,8 @@ public class Course {
 
 		      //STEP 4: Execute a query
 		      System.out.println("Creating statement... And fetching existing Course");
-		      PreparedStatement stmt = conn.prepareStatement("SELECT CallNumber, CourseName, Instructor FROM course " + "WHERE CallNumber = ?");
+		      PreparedStatement stmt = conn.prepareStatement("SELECT CallNumber, CourseName, Instructor FROM course " 
+		      + "WHERE CallNumber = ?");
 		      stmt.setInt(1, callNumber);
 		      ResultSet rs = stmt.executeQuery();
 
@@ -114,13 +108,6 @@ public class Course {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      
-			   /*try{
-		         if(stmt!=null)
-		            stmt.close();
-		      }catch(SQLException se2){
-		      }// nothing we can do
-		      */
 		      try{
 		         if(conn!=null)
 		            conn.close();
@@ -164,11 +151,6 @@ public class Course {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      /*try{
-		         if(stmt!=null)
-		            conn.close();
-		      }catch(SQLException se){
-		      }// do nothing*/
 		      try{
 		         if(conn!=null)
 		            conn.close();

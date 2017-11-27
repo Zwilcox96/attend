@@ -10,7 +10,8 @@ public class ClassSession {
 	private static int pin;
 	//SQL values
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect=true&useSSL=false";
+	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect"
+			+ "=true&useSSL=false";
 	static final String USER = "letsstore";
 	static final String PASS = "iloveherky";
 	
@@ -42,10 +43,8 @@ public class ClassSession {
 		      //STEP 3: Open a connection
 		      System.out.println("Connecting to database...in class session");
 		      conn = DriverManager.getConnection(DB_URL,USER,PASS);
-		      
-		      
+		      		      
 		      //STEP 4: Execute a query
-		      //System.out.println("Creating statement...while creating a new class session" + new java.sql.Timestamp(endTime.getTimeInMillis()));
 		      PreparedStatement stmt = conn.prepareStatement("INSERT INTO classsession VALUES(?, ?, ?, ?);");
 		      stmt.setInt(1, parentCourse.getCallNumber());
 		      stmt.setTimestamp(2, new java.sql.Timestamp(endTime.getTimeInMillis()));
@@ -53,6 +52,11 @@ public class ClassSession {
 		      stmt.setInt(4, pin);
 		      stmt.executeUpdate();
 		      GoogleSheets.getDate();
+		      Instructor instructor = parentCourse.getIntsructor();
+		      String IEmail = instructor.getEmail();
+		      String subject = "Your  new class session has been created.";
+		      String message = "Session ID: " + sessionID;
+		      Messenger m = new Messenger(IEmail, subject, message);
 		}catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();
@@ -94,7 +98,8 @@ public class ClassSession {
 
 		      //STEP 4: Execute a query
 		      System.out.println("Creating statement... while fetching existing class session");
-		      PreparedStatement stmt = conn.prepareStatement("SELECT CourseNumber, Sdate, Pin FROM classsession " + "WHERE SessionID = ?");
+		      PreparedStatement stmt = conn.prepareStatement("SELECT CourseNumber, Sdate, Pin FROM classsession " 
+		      + "WHERE SessionID = ?");
 		      stmt.setInt(1, sessionID);
 		      ResultSet rs = stmt.executeQuery();
 

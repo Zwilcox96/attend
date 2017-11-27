@@ -8,7 +8,8 @@ import java.sql.*;
 public class Register {
 	
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect=true&useSSL=false";
+	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect"
+			+ "=true&useSSL=false";
 	static final String USER = "letsstore";
 	static final String PASS = "iloveherky";
 	
@@ -23,7 +24,7 @@ public class Register {
 	 */
 	public static void createStudent(int sid, String name, String email, String password){
 		Connection conn = null;
-		Statement stmt = null;
+		//Statement stmt = null;
 		try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -34,11 +35,12 @@ public class Register {
 
 		      //STEP 4: Execute a query
 		      System.out.println("Creating statement...");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "INSERT INTO student VALUES('"+ sid+"', '" + name +"', '"+ email + "', '"+ password+ "');";
-		      System.out.println(sql);
-		      stmt.executeUpdate(sql);
+		      PreparedStatement stmt = conn.prepareStatement("INSERT INTO student VALUES(?, ?, ?, ?);");
+		      stmt.setInt(1, sid);
+		      stmt.setString(2, name);
+		      stmt.setString(3, email);
+		      stmt.setString(4, password);
+		      stmt.executeUpdate();		    
 		      GoogleSheets.updateName(name, sid);
 		      Messenger m = new Messenger(email, "Welcome to I'm here!", "Thank you for registering!");
 		}catch(SQLException se){
@@ -52,11 +54,11 @@ public class Register {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
+		     /* try{
 		         if(stmt!=null)
 		            conn.close();
 		      }catch(SQLException se){
-		      }// do nothing
+		      }// do nothing*/
 		      try{
 		         if(conn!=null)
 		            conn.close();
@@ -77,7 +79,7 @@ public class Register {
 	 */
 	public static void createInstructor(int iid, String email, String name, String password){
 		Connection conn = null;
-		Statement stmt = null;
+		//Statement stmt = null;
 		try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -88,11 +90,12 @@ public class Register {
 
 		      //STEP 4: Execute a query
 		      System.out.println("Creating statement...");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "INSERT INTO instructor VALUES('"+ iid+"', '" + email +"', '"+ name + "', '"+ password+ "');";
-		      System.out.println(sql);
-		      stmt.executeUpdate(sql);
+		      PreparedStatement stmt = conn.prepareStatement("INSERT INTO instructor VALUES(?, ?, ?, ?);");
+		      stmt.setInt(1, iid);
+		      stmt.setString(2, name);
+		      stmt.setString(3, email);
+		      stmt.setString(4, password);
+		      stmt.executeUpdate();
 		      Messenger m = new Messenger(email, "Welcome to I'm here!", "Thank you for registering!");
 		}catch(SQLException se){
 		      //Handle errors for JDBC
@@ -105,11 +108,11 @@ public class Register {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
+		      /*try{
 		         if(stmt!=null)
 		            conn.close();
 		      }catch(SQLException se){
-		      }// do nothing
+		      }// do nothing*/
 		      try{
 		         if(conn!=null)
 		            conn.close();

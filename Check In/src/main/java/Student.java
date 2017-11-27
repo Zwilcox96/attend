@@ -12,7 +12,8 @@ public class Student {
 	
 	//These variables are for the database connection
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect=true&useSSL=false";
+	static final String DB_URL = "jdbc:mysql://attend.ctddylfx9obm.us-west-1.rds.amazonaws.com:3306/attend?autoReconnect"
+			+ "=true&useSSL=false";
 	static final String USER = "letsstore";
 	static final String PASS = "iloveherky";
 	
