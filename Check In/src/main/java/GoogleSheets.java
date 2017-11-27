@@ -123,7 +123,7 @@ public class GoogleSheets {
         
         String spreadsheetId = "1A-WnepO4dK77xY4AmFU53PnTCxDwpJdkMpXqXYHgAxQ";
         
-        String range = "A1:Z1";
+        String range = "1:1";
         
         ValueRange result = service.spreadsheets().values().get(spreadsheetId, range).setMajorDimension("COLUMNS").execute();
         int column = result.getValues() != null ? result.getValues().size() : 0;
@@ -333,7 +333,7 @@ public class GoogleSheets {
     }
     
     /**
-     * This method marks the time a given student records their attendance for a give class period
+     * This method marks the time a student records their attendance for a class session
      * @param row The row that a students SID is on
      * @throws IOException when a spreadsheet cannot be reached
      */

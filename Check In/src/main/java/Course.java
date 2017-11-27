@@ -1,6 +1,7 @@
-/*
- * This class creates and maintains courses. 
- * Todo: create methods as described in the class diagram
+/**
+ * This class is used to create and manipulate instructors.
+ * @author Zack Wilcox
+ * @since 11-15-2017
  */
 
 import java.sql.*;
@@ -75,7 +76,8 @@ public class Course {
 		
 		callNumber = cNumber;
 		Connection conn = null;
-		Statement stmt = null;
+		//Statement stmt = null;
+		
 		   try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -86,10 +88,9 @@ public class Course {
 
 		      //STEP 4: Execute a query
 		      System.out.println("Creating statement... And fetching existing Course");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "SELECT CallNumber, CourseName, Instructor FROM course " + "WHERE CallNumber = "  + cNumber;
-		      ResultSet rs = stmt.executeQuery(sql);
+		      PreparedStatement stmt = conn.prepareStatement("SELECT CallNumber, CourseName, Instructor FROM course " + "WHERE CallNumber = ?");
+		      stmt.setInt(1, callNumber);
+		      ResultSet rs = stmt.executeQuery();
 
 		      //STEP 5: Extract data from result set
 		      while(rs.next()){
@@ -113,11 +114,13 @@ public class Course {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
+		      
+			   /*try{
 		         if(stmt!=null)
 		            stmt.close();
 		      }catch(SQLException se2){
 		      }// nothing we can do
+		      */
 		      try{
 		         if(conn!=null)
 		            conn.close();
@@ -133,10 +136,10 @@ public class Course {
 	 * JDBC code is modified from code originally found on tutorialspoint.com
 	 * @param S The SID of a student.
 	 */
-	public static void addStudent(Student S){
+	public static void addStudent(Student newStudent){
 
 		Connection conn = null;
-		Statement stmt = null;
+		//Statement stmt = null;
 		try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -147,24 +150,25 @@ public class Course {
 
 		      //STEP 4: Execute a query
 		      System.out.println("Creating statement...in course and adding student");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "INSERT INTO enrolled VALUES('"+ S.getSID() + "', '"+ callNumber + "');";
-		      System.out.println(sql);
-		      stmt.executeUpdate(sql);
+		      PreparedStatement stmt = conn.prepareStatement("INSERT INTO enrolled VALUES(?, ?);");
+		      //System.out.println(sql);
+		      stmt.setInt(1, newStudent.getSID());
+		      stmt.setInt(2, callNumber);
+		      stmt.executeUpdate();
 		}catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();
+		      System.out.println("You are already Enrolled.");
 		   }catch(Exception e){
 		      //Handle errors for Class.forName
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
+		      /*try{
 		         if(stmt!=null)
 		            conn.close();
 		      }catch(SQLException se){
-		      }// do nothing
+		      }// do nothing*/
 		      try{
 		         if(conn!=null)
 		            conn.close();
@@ -218,7 +222,7 @@ public class Course {
 	 */
 	public static ClassSession getClassSession(){
 		Connection conn = null;
-		Statement stmt = null;
+		//Statement stmt = null;
 		   try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -229,15 +233,14 @@ public class Course {
 
 		      //STEP 4: Execute a query
 		      //System.out.println("Creating statement... and fin");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "SELECT SessionID FROM classsession " + "WHERE CourseNumber = "  + callNumber;
-		      ResultSet rs = stmt.executeQuery(sql);
+		      PreparedStatement stmt = conn.prepareStatement("SELECT SessionID FROM classsession " + "WHERE CourseNumber = ?");
+		      stmt.setInt(1, callNumber);
+		      ResultSet rs = stmt.executeQuery();
 
 		      //STEP 5: Extract data from result set
 		      rs.last();
-		      ClassSession c = new ClassSession(rs.getInt("SessionID"));
-		      return c;
+		      ClassSession classSession = new ClassSession(rs.getInt("SessionID"));
+		      return classSession;
 		   }catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();
@@ -246,11 +249,11 @@ public class Course {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
+		      /*try{
 		         if(stmt!=null)
 		            stmt.close();
 		      }catch(SQLException se2){
-		      }// nothing we can do
+		      }// nothing we can do*/
 		      try{
 		         if(conn!=null)
 		            conn.close();

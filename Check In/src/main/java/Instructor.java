@@ -1,12 +1,9 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
-/*
- * A class to access professor information
- * Todo: Catch Errors
+/**
+ * This class is used to create and manipulate instructors.
+ * @author Zack Wilcox
+ * @since 11-15-2017
  */
 public class Instructor {
 	private static int instructorID;
@@ -30,7 +27,7 @@ public class Instructor {
 	Instructor(int iID){
 		instructorID = iID;
 		Connection conn = null;
-		Statement stmt = null;
+		//Statement stmt = null;
 		   try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -41,10 +38,9 @@ public class Instructor {
 
 		      //STEP 4: Execute a query
 		      System.out.println("Creating statement...");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "SELECT IID, IName, IEmail FROM instructor " + "WHERE IID = "  + iID;
-		      ResultSet rs = stmt.executeQuery(sql);
+		      PreparedStatement stmt = conn.prepareStatement("SELECT IID, IName, IEmail FROM instructor " + "WHERE IID = ?");
+		      stmt.setInt(1, iID);
+		      ResultSet rs = stmt.executeQuery();
 
 		      //STEP 5: Extract data from result set
 		      while(rs.next()){
@@ -68,11 +64,11 @@ public class Instructor {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
+		      /*try{
 		         if(stmt!=null)
 		            stmt.close();
 		      }catch(SQLException se2){
-		      }// nothing we can do
+		      }// nothing we can do*/
 		      try{
 		         if(conn!=null)
 		            conn.close();
@@ -89,7 +85,7 @@ public class Instructor {
 	 */
 	public static Course[] getCourses(){
 		Connection conn = null;
-		 Statement stmt = null;
+		 //Statement stmt = null;
 		   try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -100,10 +96,9 @@ public class Instructor {
 
 		      //STEP 4: Execute a query
 		      //System.out.println("Creating statement...");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "SELECT CallNumber FROM courses " + "WHERE Instructor = "  + instructorID;
-		      ResultSet rs = stmt.executeQuery(sql);
+		      PreparedStatement stmt = conn.prepareStatement("SELECT CallNumber FROM courses " + "WHERE Instructor = ?");
+		      stmt.setInt(1, instructorID);
+		      ResultSet rs = stmt.executeQuery();
 
 		      //STEP 5: Extract data from result set and place in an array
 		      //Find the size of the required array
@@ -134,11 +129,11 @@ public class Instructor {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
+		      /*try{
 		         if(stmt!=null)
 		            stmt.close();
 		      }catch(SQLException se2){
-		      }// nothing we can do
+		      }// nothing we can do*/
 		      try{
 		         if(conn!=null)
 		            conn.close();

@@ -63,14 +63,17 @@ public class SheetsQuickstart extends GoogleSheets{
         while(!name.equals("bye")){
         
 	        if (name.equals("Professor")) {
-	        	Student s = new Student(2222);
+	        	Student s = new Student(9001);
 	        	ClassSession c = new ClassSession(5555013);
 	        	c.override(c, s, true);
 	        } else if(name.equals("reg")) {
 	        	
-	        	Course c = new Course(5555);
-	        	c.makeNewSession(747, 10);
-	        	//Register.createStudent(4444, "zwilcox96@gmail.com", "Trump", "Holdmybeer");
+	        	//Course c = new Course(5555);
+	        	//c.makeNewSession(747, 10);
+	        	
+	        	//Student s = new Student(9001);
+	        	//c.addStudent(s);
+	        	Register.createInstructor(9999, "zwilcox96@gmail.com", "Kim Jung Un", "Best Korea");
 	        	
 	        } else {
 	        	Calendar time = Calendar.getInstance();

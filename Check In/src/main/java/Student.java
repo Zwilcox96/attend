@@ -1,7 +1,7 @@
-/*
+/**
  * This class is used to create and manipulate students
- * By Zack Wilcox
- * ToDo: add error catching
+ * @author Zack Wilcox
+ * @since 11-15-2017
  */
 
 import java.sql.*;
@@ -25,7 +25,7 @@ public class Student {
 	Student(int sID){
 		studentID = sID;
 		 Connection conn = null;
-		 Statement stmt = null;
+		 //Statement stmt = null;
 		   try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -36,10 +36,9 @@ public class Student {
 
 		      //STEP 4: Execute a query
 		      //System.out.println("Creating statement...");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "SELECT SID, SName, SEmail FROM student " + "WHERE SID = "  + sID;
-		      ResultSet rs = stmt.executeQuery(sql);
+		      PreparedStatement stmt = conn.prepareStatement("SELECT SID, SName, SEmail FROM student " + "WHERE SID = ?");
+		      stmt.setInt(1, sID);
+		      ResultSet rs = stmt.executeQuery();
 
 		      //STEP 5: Extract data from result set
 		      while(rs.next()){
@@ -64,11 +63,11 @@ public class Student {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
+		      /*try{
 		         if(stmt!=null)
 		            stmt.close();
 		      }catch(SQLException se2){
-		      }// nothing we can do
+		      }// nothing we can do*/
 		      try{
 		         if(conn!=null)
 		            conn.close();
@@ -86,7 +85,7 @@ public class Student {
 	 */
 	public static Course[] getCourses(){
 		Connection conn = null;
-		 Statement stmt = null;
+		 //Statement stmt = null;
 		   try{
 		      //STEP 2: Register JDBC driver
 		      Class.forName("com.mysql.jdbc.Driver");
@@ -97,10 +96,9 @@ public class Student {
 
 		      //STEP 4: Execute a query
 		      //System.out.println("Creating statement...");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "SELECT CallNumber FROM enrolled " + "WHERE SID = "  + studentID;
-		      ResultSet rs = stmt.executeQuery(sql);
+		      PreparedStatement stmt = conn.prepareStatement("SELECT CallNumber FROM enrolled " + "WHERE SID = ?");
+		      stmt.setInt(1, studentID);
+		      ResultSet rs = stmt.executeQuery();
 
 		      //STEP 5: Extract data from result set and place in an array
 		      //Find the size of the required array
@@ -131,11 +129,11 @@ public class Student {
 		      e.printStackTrace();
 		   }finally{
 		      //finally block used to close resources
-		      try{
+		      /*try{
 		         if(stmt!=null)
 		            stmt.close();
 		      }catch(SQLException se2){
-		      }// nothing we can do
+		      }// nothing we can do*/
 		      try{
 		         if(conn!=null)
 		            conn.close();
@@ -147,6 +145,67 @@ public class Student {
 		return null;
 		   
 	}
+	/**
+	 * This method finds if a student in enrolled in a course.
+	 * @param course The course which has enrollment status checked.
+	 * @return A boolean value stating the enrollment status of a student.
+	 */
+	public static boolean isEnrolled(Course course){
+		Connection conn = null;
+		//Statement stmt = null;
+		
+		   try{
+		      //STEP 2: Register JDBC driver
+		      Class.forName("com.mysql.jdbc.Driver");
+
+		      //STEP 3: Open a connection
+		      //System.out.println("Connecting to database...");
+		      conn = DriverManager.getConnection(DB_URL,USER,PASS);
+
+		      //STEP 4: Execute a query
+		      System.out.println("Creating statement... And fetching existing Course");
+		      PreparedStatement stmt = conn.prepareStatement("SELECT CallNumber FROM enrolled " + "WHERE SID = ?");
+		      stmt.setInt(1, studentID);
+		      ResultSet rs = stmt.executeQuery();
+
+		      //STEP 5: Extract data from result set
+		      boolean enrolledInClass = false;
+		      while(rs.next()){
+		         if(rs.getInt("CallNumber")== course.getCallNumber()){
+		        	 enrolledInClass = true;
+		         }
+		      }
+		      //STEP 6: Clean-up environment
+		      rs.close();
+		      stmt.close();
+		      conn.close();
+		      return enrolledInClass;
+		   }catch(SQLException se){
+		      //Handle errors for JDBC
+		      se.printStackTrace();
+		   }catch(Exception e){
+		      //Handle errors for Class.forName
+		      e.printStackTrace();
+		   }finally{
+		      //finally block used to close resources
+		      
+			   /*try{
+		         if(stmt!=null)
+		            stmt.close();
+		      }catch(SQLException se2){
+		      }// nothing we can do
+		      */
+		      try{
+		         if(conn!=null)
+		            conn.close();
+		      }catch(SQLException se){
+		         se.printStackTrace();
+		      }//end finally try
+		   }//end try
+		   //System.out.println("Goodbye!");
+		return true;
+	}
+	
 	
 	/**
 	 * This method will give you the email of a Student.

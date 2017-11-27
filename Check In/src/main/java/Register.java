@@ -1,5 +1,7 @@
-/*
- * This class is made to add users to the system using mySQL.
+/**
+ * This class adds students and professors to the MySQL database.
+ * @author Zack Wilcox
+ * @since 11-15-2017
  */
 import java.sql.*;
 
@@ -15,11 +17,11 @@ public class Register {
 	 * The code then email's the student to confirm registration.
 	 * JDBC code is modified from code originally found on tutorialspoint.com
 	 * @param sid The student's ID number
-	 * @param email The student's Email address.
 	 * @param name The student's name.
+	 * @param email The student's Email address.
 	 * @param password The password the student will use to log in.
 	 */
-	public static void createStudent(int sid, String email, String name, String password){
+	public static void createStudent(int sid, String name, String email, String password){
 		Connection conn = null;
 		Statement stmt = null;
 		try{
@@ -34,7 +36,7 @@ public class Register {
 		      System.out.println("Creating statement...");
 		      stmt = conn.createStatement();
 		      String sql;
-		      sql = "INSERT INTO student VALUES('"+ sid+"', '" + email +"', '"+ name + "', '"+ password+ "');";
+		      sql = "INSERT INTO student VALUES('"+ sid+"', '" + name +"', '"+ email + "', '"+ password+ "');";
 		      System.out.println(sql);
 		      stmt.executeUpdate(sql);
 		      GoogleSheets.updateName(name, sid);
@@ -42,6 +44,9 @@ public class Register {
 		}catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();
+		      if(se.getSQLState().startsWith("23")){
+		    	  System.out.println("A student with this ID already exists.");
+		      }
 		   }catch(Exception e){
 		      //Handle errors for Class.forName
 		      e.printStackTrace();
@@ -92,6 +97,9 @@ public class Register {
 		}catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();
+		      if(se.getSQLState().startsWith("23")){
+		    	  System.out.println("An Instructor with this ID already exists.");
+		      }
 		   }catch(Exception e){
 		      //Handle errors for Class.forName
 		      e.printStackTrace();
