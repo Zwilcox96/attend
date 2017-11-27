@@ -8,7 +8,7 @@
         <link rel="stylesheet" type="text/css" href="vendors/css/grid.css">
     </head>
     <ul class="main-nav">
-             <li><a href="takeattendance.html">Take Attendance</a></li>
+            <li><a href="takeattendance.html">Take Attendance</a></li>
             <li><a href="makeclass.html" class="active">Create a Class</a></li>
             <li><a href="professorSignUp.html">Register</a></li>
             <li><a href="override.html">Override</a></li>
@@ -17,28 +17,25 @@
     <body>
         <div class="container">
             <div class="user-form row">
-                <h1>Welcome to I'm Here!</h1>
-                <h3>Let's get to know you.</h3>
+                <h1>Let's Change Attendance</h1>
                 <form method="post" action="#" class="contact-form">
                     <div class="row">
-                        <input type="text" name="professor_id" id="professor_id" placeholder="Your ID" required>
+                        <input type="text" name="student_id" id="student_id" placeholder="Student ID" required>
                     </div>
                     <div class="row">
-                        <input type="text" name="professor_name" id="professor_name" placeholder="Name" required>
+                        <input type="text" name="sessionID" id="sessionID" placeholder="Session ID" required>
                     </div>
                     <div class="row">
-                        <input type="text" name="professor_email" id="professor_email" placeholder="Email" required>
+                        <select name="attended" id="attended">
+                            <option value="true" selected>Here</option>
+                            <option value="false" >Mr. Student, He No Here</option>
+                        </select>
                     </div>
                     <div class="row">
-                        <input type="password" name="professor_password" id="professor_password" placeholder="Password" required>
-                    </div>
-                    <div class="row">
-                        <input type="submit" value="Sign Up!">
+                        <input type="submit" value="I'm Here!">
                     </div>
                 </form> 
-                <div class="row">
-                    <a class="button-full" href="studentSignUp.html">Sign up as a Student</a>
-                </div>
             </div>
         </div>
     </body>
+</html>

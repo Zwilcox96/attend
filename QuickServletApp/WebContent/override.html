@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+
+<html>
+
+    <head>
+        <title>Attendance Tracker</title>
+        <link rel="stylesheet" type="text/css" href="resources/css/style.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/grid.css">
+    </head>
+    <ul class="main-nav">
+            <li><a href="takeattendance.html">Take Attendance</a></li>
+            <li><a href="makeclass.html" class="active">Create a Class</a></li>
+            <li><a href="professorSignUp.html">Register</a></li>
+            <li><a href="override.html">Override</a></li>
+            <li><a href="attendaclass.html">Switch to Student</a></li>
+        </ul>
+    <body>
+        <div class="container">
+            <div class="user-form row">
+                <h1>Let's Change Attendance</h1>
+                <form method="post" action="SuperUsr" class="contact-form">
+                    <div class="row">
+                        <input type="text" name="student_id" id="student_id" placeholder="Student ID" required>
+                    </div>
+                    <div class="row">
+                        <input type="text" name="sessionID" id="sessionID" placeholder="Session ID" required>
+                    </div>
+                    <div class="row">
+                        <select name="attended" id="attended">
+                            <option value="true" selected>Here</option>
+                            <option value="false" >Mr. Student, He No Here</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="I'm Here!">
+                    </div>
+                </form> 
+            </div>
+        </div>
+    </body>
+</html>

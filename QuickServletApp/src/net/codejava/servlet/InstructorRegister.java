@@ -7,19 +7,20 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import temp.SheetsQuickstart;
-import temp.GoogleSheets;
 
-public class QuickServlet extends HttpServlet {
+public class InstructorRegister extends HttpServlet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2030;
 
 	/**
 	 * this life-cycle method is invoked when this servlet is first accessed
 	 * by the client
 	 */
 	public void init(ServletConfig config) {
-		System.out.println("Servlet is being initialized");
-		System.out.println("Working Directory = " +
-	              System.getProperty("user.dir"));
+		System.out.println("InstructorRegister is being initialized");
 	}
 
 	/**
@@ -29,9 +30,6 @@ public class QuickServlet extends HttpServlet {
 			throws IOException {
 
 		PrintWriter writer = response.getWriter();
-		/*System.out.println("Working Directory = " +
-	              System.getProperty("user.dir"));*/
-		SheetsQuickstart.updateSheets();
 		writer.println("<html>Hello, I am a Java servlet!</html>");
 		writer.flush();
 	}
@@ -39,17 +37,22 @@ public class QuickServlet extends HttpServlet {
 	/**
 	 * handles HTTP POST request
 	 */
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		PrintWriter writer = response.getWriter();
-		String yourID = request.getParameter("student_id");
-		String pin = request.getParameter("classPin");
-		if (pin.equals(GoogleSheets.getPin()) ) {
-        	int row = GoogleSheets.checkStudent(yourID);
-            GoogleSheets.markAttendance(row, yourID);
-		}
-		//request.getParameter("");
-		writer.println("<html>message sent successfully</html>");
+		String yourID = request.getParameter("professor_id"),
+			   name = request.getParameter("professor_name"),
+			   email = request.getParameter("professor_email"),
+			   password = request.getParameter("professor_password");
+
+		writer.println("<html>It worked.</html>");
+		writer.println("<html>");
+		writer.println("student_ID: " + yourID);
+		writer.println("student name: "+ name);
+		writer.println("email: " + email);
+		writer.println("password: " + password);
+		writer.println("</html>");
 		writer.flush();
 	}
 
@@ -58,6 +61,6 @@ public class QuickServlet extends HttpServlet {
 	 * is shutting down
 	 */
 	public void destroy() {
-		System.out.println("Servlet is being destroyed");
+		System.out.println("InstructorRegister is being destroyed");
 	}
 }

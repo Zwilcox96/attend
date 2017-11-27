@@ -3,20 +3,23 @@
 <html>
 
     <head>
-        <title>Attendence Tracker</title>
+        <title>Attendance Tracker</title>
         <link rel="stylesheet" type="text/css" href="resources/css/style.css">
         <link rel="stylesheet" type="text/css" href="vendors/css/grid.css">
     </head>
     <ul class="main-nav">
-            <li><a href="index.html">Attend a Class</a></li>
-            <li><a href="joinaclass.html">Join a Class</a></li>
+             <li><a href="takeattendance.html">Take Attendance</a></li>
+            <li><a href="makeclass.html" class="active">Create a Class</a></li>
+            <li><a href="professorSignUp.html">Register</a></li>
+            <li><a href="override.html">Override</a></li>
+            <li><a href="attendaclass.html">Switch to Student</a></li>
         </ul>
     <body>
         <div class="container">
             <div class="user-form row">
                 <h1>Welcome to I'm Here!</h1>
                 <h3>Let's get to know you.</h3>
-                <form method="post" action="#" class="contact-form">
+                <form method="post" action="InstructorRegister" class="contact-form">
                     <div class="row">
                         <input type="text" name="professor_id" id="professor_id" placeholder="Your ID" required>
                     </div>
