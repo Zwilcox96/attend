@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	
+	<display-name>I'm here - Attendance Tracker</display-name>
+	
+	<servlet>
+		<servlet-name>AttendClass</servlet-name>
+		<servlet-class>net.codejava.servlet.AttendClass</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>Join</servlet-name>
+		<servlet-class>net.codejava.servlet.Join</servlet-class>
+	</servlet>
+  
+    <servlet>
+		<servlet-name>StuReg</servlet-name>
+		<servlet-class>net.codejava.servlet.StuReg</servlet-class>
+	</servlet>
+  
+  	<servlet>
+		<servlet-name>InstructorRegister</servlet-name>
+		<servlet-class>net.codejava.servlet.InstructorRegister</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>StartClass</servlet-name>
+		<servlet-class>net.codejava.servlet.StartClass</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>SummonClass</servlet-name>
+		<servlet-class>net.codejava.servlet.SummonClass</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>SuperUsr</servlet-name>
+		<servlet-class>net.codejava.servlet.SuperUsr</servlet-class>
+	</servlet>
+  
+	<servlet-mapping>
+		<servlet-name>AttendClass</servlet-name>
+		<url-pattern>/AttendClass</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>Join</servlet-name>
+		<url-pattern>/Join/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>StuReg</servlet-name>
+		<url-pattern>/StuReg/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>InstructorRegister</servlet-name>
+		<url-pattern>/InstructorRegister/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>StartClass</servlet-name>
+		<url-pattern>/StartClass/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>SummonClass</servlet-name>
+		<url-pattern>/SummonClass/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>SuperUsr</servlet-name>
+		<url-pattern>/SuperUsr/*</url-pattern>
+	</servlet-mapping>
+	
+</web-app>

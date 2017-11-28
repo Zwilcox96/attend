@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+
+<html>
+
+    <head>
+        <title>Attendance Tracker</title>
+        <link rel="stylesheet" type="text/css" href="resources/css/style.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/grid.css">
+    </head>
+    <ul class="main-nav">
+            <li><a href="attendaclass.html">Attend a Class</a></li>
+            <li><a href="joinaclass.html">Join a Class</a></li>
+            <li><a href="studentSignUp.html">Register</a></li>
+            <li><a href="takeattendance.html">Switch to Professor</a></li>
+        </ul>
+    <body>
+        <div class="container">
+            <div class="user-form row">
+                <h1>Welcome to I'm Here!</h1>
+                <h3>Let's get to know you.</h3>
+                <form method="post" action="StuReg" class="contact-form">
+                    <div class="row">
+                        <input type="text" name="student_id" id="student_id" placeholder="Your ID" required>
+                    </div>
+                    <div class="row">
+                        <input type="text" name="student_name" id="student_name" placeholder="Name" required>
+                    </div>
+                    <div class="row">
+                        <input type="text" name="student_email" id="student_email" placeholder="Email" required>
+                    </div>
+                    <div class="row">
+                        <input type="password" name="student_password" id="student_password" placeholder="Password" required>
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="Sign Up!">
+                    </div>
+                </form> 
+                <div class="row">
+                    <a class="button-full" href="professorSignUp.html">Sign up as a Professor</a>
+                </div>
+            </div>
+        </div>
+    </body>
