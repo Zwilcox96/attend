@@ -41,13 +41,9 @@ public class StuReg extends HttpServlet {
 			   email = request.getParameter("student_email"),
 			   password = request.getParameter("student_password");
 
-		writer.println("<html>It worked.</html>");
-		writer.println("<html>");
-		writer.println("student_ID: " + yourID);
-		writer.println("student name: "+ name);
-		writer.println("email: " + email);
-		writer.println("password: " + password);
-		writer.println("</html>");
+		String msg = Register.createStudent(Integer.parseInt(yourID), email, name, password);
+
+		writer.println("<html>"+ msg + "</html>");
 		writer.flush();
 	}
 

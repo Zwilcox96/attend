@@ -2,13 +2,14 @@ package net.codejava.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import temp.SheetsQuickstart;
-import temp.GoogleSheets;
+
 
 public class AttendClass extends HttpServlet {
 
@@ -29,7 +30,6 @@ public class AttendClass extends HttpServlet {
 			throws IOException {
 
 		PrintWriter writer = response.getWriter();
-		SheetsQuickstart.updateSheets();
 		writer.println("<html>Hello, I am a Java servlet!</html>");
 		writer.flush();
 	}
@@ -42,12 +42,28 @@ public class AttendClass extends HttpServlet {
 		PrintWriter writer = response.getWriter();
 		String yourID = request.getParameter("student_id");
 		String pin = request.getParameter("classPin");
-		if (pin.equals(GoogleSheets.getPin()) ) {
-        	int row = GoogleSheets.checkStudent(yourID);
+		
+    	Calendar time = Calendar.getInstance();
+		//Date time = now.getTime();
+    	Student student = new Student(Integer.parseInt(yourID));
+    	String msg = "Hello " + student.getName() + ", <br/>";
+    	//msg = msg + " we have recieved your attendance for today's class. <br/> A confirmation e-mail has been sent as proof.";
+        Course c = new Course(5555);
+
+        ClassSession sesh = c.getClassSession();
+        msg = msg + sesh.attend(student, time, Integer.parseInt(pin));
+		
+        if (pin.equals(GoogleSheets.getPin()) ) {
+        	int row = GoogleSheets.checkStudent(Integer.parseInt(yourID));
             GoogleSheets.markAttendance(row, yourID);
 		}
-		//request.getParameter("");
-		writer.println("<html>" + yourID + ", we have recieved your attendance for today's class. A confirmation e-mail has been sent as proof." + "</html>");
+        
+		//GoogleSheets.checkStudent(yourID);
+		//WebInterface.markAttend(Integer.parseInt(yourID), Integer.parseInt(pin));
+		//String msg = "temp";
+		//String msg = WebInterface.markAttend(Integer.parseInt(yourID), Integer.parseInt(pin));
+		//WebInterface.instructRegister();
+		writer.println("<html>" + msg + "</html>");
 		writer.flush();
 	}
 

@@ -38,7 +38,13 @@ public class Join extends HttpServlet {
 		PrintWriter writer = response.getWriter();
 		String classID = request.getParameter("classNumber");
 		String studentID = request.getParameter("studentNumber");
-		writer.println("<html>ClassID:" + classID + " SID:" + studentID +"</html>");
+		
+		Student stu = new Student(Integer.parseInt(studentID));
+		
+		Course c = new Course(5555);
+		String msg = c.addStudent(stu);
+		
+		writer.println("<html>" + msg + "</html>");
 		writer.flush();
 	}
 

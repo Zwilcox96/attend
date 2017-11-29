@@ -38,8 +38,12 @@ public class SuperUsr extends HttpServlet {
 		PrintWriter writer = response.getWriter();
 		String studentID = request.getParameter("student_id");
 		String session = request.getParameter("sessionID");
+		String present = request.getParameter("attended"); 
+		ClassSession sesh = new ClassSession(Integer.parseInt(session));
+		Student stu = new Student(Integer.parseInt(studentID));
+		sesh.override(sesh, stu , Boolean.parseBoolean(present));
 
-		writer.println("<html>Session ID:" + session + " SID:" + studentID +"</html>");
+		writer.println("<html> Student Overridden. </html>");
 		writer.flush();
 	}
 

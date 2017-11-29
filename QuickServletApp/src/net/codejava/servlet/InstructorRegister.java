@@ -45,14 +45,10 @@ public class InstructorRegister extends HttpServlet {
 			   name = request.getParameter("professor_name"),
 			   email = request.getParameter("professor_email"),
 			   password = request.getParameter("professor_password");
+		
+		String msg = Register.createInstructor(Integer.parseInt(yourID), email, name, password);
 
-		writer.println("<html>It worked.</html>");
-		writer.println("<html>");
-		writer.println("student_ID: " + yourID);
-		writer.println("student name: "+ name);
-		writer.println("email: " + email);
-		writer.println("password: " + password);
-		writer.println("</html>");
+		writer.println("<html>"+ msg + "</html>");
 		writer.flush();
 	}
 

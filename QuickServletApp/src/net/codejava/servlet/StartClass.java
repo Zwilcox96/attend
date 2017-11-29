@@ -2,6 +2,7 @@ package net.codejava.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
@@ -37,10 +38,20 @@ public class StartClass extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		PrintWriter writer = response.getWriter();
+		String cNum = request.getParameter("callNumber");
 		String limit = request.getParameter("time");
 		String cPIN = request.getParameter("classPin");
-
-		writer.println("<html>time limit:" + limit + " PIN:" + cPIN +"</html>");
+		
+		Course c = new Course(5555);
+		
+		ClassSession sesh = c.makeNewSession(Integer.parseInt(cPIN), Integer.parseInt(limit));
+		
+		Calendar time = sesh.getDate();
+		
+		GoogleSheets.getDate();
+		GoogleSheets.setPin(cPIN);
+		
+		writer.println("<html>Time limit:" + time.getTime() + "<br/> PIN:" + cPIN + "</html>");
 		writer.flush();
 	}
 

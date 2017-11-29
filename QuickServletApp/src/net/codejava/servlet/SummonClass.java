@@ -39,8 +39,10 @@ public class SummonClass extends HttpServlet {
 		PrintWriter writer = response.getWriter();
 		String cName = request.getParameter("className");
 		String cNum = request.getParameter("classNumber");
-
-		writer.println("<html>Class Name:" + cName + " Class Number:" + cNum +"</html>");
+		
+		//Course c = new Course(Integer.parseInt(cNum),cName, ## );
+		
+		writer.println("<html>Class Name:" + cName + "<br/> Class Number:" + cNum +" <br/>Class successfully created. </html>");
 		writer.flush();
 	}
 
