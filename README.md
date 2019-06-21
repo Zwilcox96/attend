@@ -1,5 +1,4 @@
 # attend
 Repository for our CSUS CSC 131 course
-Congrats on cloning the repository... assuming you aren't reading this on github
-Hello
+This is not representative of my current capabilities and is only up for old times sake.
 
